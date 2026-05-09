@@ -1,0 +1,45 @@
+/* Editorial display + clean sans body. Self-hosted from Google Fonts via
+   the @import is fine for free-tier; for production swap to next/font. */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,800;9..144,900&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #0a0a0b;
+  --paper: #f4f1ea;
+  --mist: #1a1a1d;
+  --bone: #e8e3d8;
+  --flag: #d4ff00;
+  --edge: #00d4a8;
+  --warn: #ff5c3d;
+}
+
+html { background: var(--ink); }
+
+body {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: "Geist", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Subtle paper-grain noise texture for warmth. SVG inlined to avoid extra request. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  z-index: 100;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' /></filter><rect width='100%25' height='100%25' filter='url(%23n)' /></svg>");
+}
+
+.tabular { font-variant-numeric: tabular-nums; }
+.font-display { font-family: "Fraunces", ui-serif, Georgia, serif; }
+.font-mono { font-family: "Geist Mono", ui-monospace, monospace; }
+
+/* Subtle hairline border in our muted bone colour — used a lot. */
+.border-hairline { border-color: rgba(232, 227, 216, 0.12); }
