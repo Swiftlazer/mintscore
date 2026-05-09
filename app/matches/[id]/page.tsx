@@ -6,6 +6,7 @@ import { getMarketOdds } from "@/lib/odds-api";
 import { predictMatch } from "@/lib/predict-match";
 import ProbabilityBar from "@/components/ProbabilityBar";
 import BookmakerLinks from "@/components/BookmakerLinks";
+import ShareButtons from "@/components/ShareButtons";
 
 export const revalidate = 1800;
 
@@ -171,6 +172,14 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
 
       <section className="mt-12 border-t border-hairline pt-8">
         <BookmakerLinks matchId={match.id} source="match" />
+      </section>
+
+      <section className="mt-10 border-t border-hairline pt-8">
+        <ShareButtons
+          title={`${match.home.name} vs ${match.away.name} prediction`}
+          description={`Model gives ${match.home.shortName} ${Math.round(p.probabilities.home*100)}% / Draw ${Math.round(p.probabilities.draw*100)}% / ${match.away.shortName} ${Math.round(p.probabilities.away*100)}%`}
+          url={`${process.env.NEXT_PUBLIC_SITE_URL ?? "https://mintscore.com.ng"}/matches/${match.id}`}
+        />
       </section>
 
       <p className="mt-8 text-xs text-bone/40">

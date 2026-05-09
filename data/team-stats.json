@@ -86,5 +86,34 @@
       "Lille OSC":             { "teamName": "Lille OSC",             "homeAttack": 1.25, "homeDefence": 0.85, "awayAttack": 1.10, "awayDefence": 0.95, "matchesPlayed": 34 },
       "Olympique Lyonnais":    { "teamName": "Olympique Lyonnais",    "homeAttack": 1.20, "homeDefence": 1.00, "awayAttack": 1.05, "awayDefence": 1.10, "matchesPlayed": 34 }
     }
+  },
+  "CL": {
+    "competitionCode": "CL",
+    "homeGoalAvg": 1.50,
+    "awayGoalAvg": 1.20,
+    "updated": "2025-09-01",
+    "teams": {
+      "Manchester City FC":    { "teamName": "Manchester City FC",    "homeAttack": 1.55, "homeDefence": 0.65, "awayAttack": 1.45, "awayDefence": 0.75, "matchesPlayed": 12 },
+      "Real Madrid CF":        { "teamName": "Real Madrid CF",        "homeAttack": 1.60, "homeDefence": 0.65, "awayAttack": 1.45, "awayDefence": 0.75, "matchesPlayed": 12 },
+      "FC Barcelona":          { "teamName": "FC Barcelona",          "homeAttack": 1.55, "homeDefence": 0.75, "awayAttack": 1.40, "awayDefence": 0.85, "matchesPlayed": 12 },
+      "Liverpool FC":          { "teamName": "Liverpool FC",          "homeAttack": 1.50, "homeDefence": 0.75, "awayAttack": 1.40, "awayDefence": 0.85, "matchesPlayed": 12 },
+      "Arsenal FC":            { "teamName": "Arsenal FC",            "homeAttack": 1.45, "homeDefence": 0.75, "awayAttack": 1.30, "awayDefence": 0.85, "matchesPlayed": 12 },
+      "FC Bayern München":     { "teamName": "FC Bayern München",     "homeAttack": 1.65, "homeDefence": 0.70, "awayAttack": 1.50, "awayDefence": 0.80, "matchesPlayed": 12 },
+      "Bayer 04 Leverkusen":   { "teamName": "Bayer 04 Leverkusen",   "homeAttack": 1.40, "homeDefence": 0.85, "awayAttack": 1.30, "awayDefence": 0.95, "matchesPlayed": 12 },
+      "Borussia Dortmund":     { "teamName": "Borussia Dortmund",     "homeAttack": 1.35, "homeDefence": 0.95, "awayAttack": 1.20, "awayDefence": 1.05, "matchesPlayed": 12 },
+      "FC Internazionale Milano": { "teamName": "FC Internazionale Milano", "homeAttack": 1.45, "homeDefence": 0.65, "awayAttack": 1.30, "awayDefence": 0.80, "matchesPlayed": 12 },
+      "AC Milan":              { "teamName": "AC Milan",              "homeAttack": 1.30, "homeDefence": 0.85, "awayAttack": 1.15, "awayDefence": 1.00, "matchesPlayed": 12 },
+      "Juventus FC":           { "teamName": "Juventus FC",           "homeAttack": 1.25, "homeDefence": 0.75, "awayAttack": 1.05, "awayDefence": 0.90, "matchesPlayed": 12 },
+      "SSC Napoli":            { "teamName": "SSC Napoli",            "homeAttack": 1.30, "homeDefence": 0.90, "awayAttack": 1.10, "awayDefence": 1.05, "matchesPlayed": 12 },
+      "Atalanta BC":           { "teamName": "Atalanta BC",           "homeAttack": 1.45, "homeDefence": 0.95, "awayAttack": 1.25, "awayDefence": 1.05, "matchesPlayed": 12 },
+      "Paris Saint-Germain FC": { "teamName": "Paris Saint-Germain FC", "homeAttack": 1.65, "homeDefence": 0.65, "awayAttack": 1.50, "awayDefence": 0.80, "matchesPlayed": 12 },
+      "AS Monaco FC":          { "teamName": "AS Monaco FC",          "homeAttack": 1.30, "homeDefence": 0.95, "awayAttack": 1.10, "awayDefence": 1.10, "matchesPlayed": 12 },
+      "Club Atlético de Madrid": { "teamName": "Club Atlético de Madrid", "homeAttack": 1.30, "homeDefence": 0.70, "awayAttack": 1.15, "awayDefence": 0.85, "matchesPlayed": 12 },
+      "Athletic Club":         { "teamName": "Athletic Club",         "homeAttack": 1.20, "homeDefence": 0.85, "awayAttack": 1.05, "awayDefence": 1.00, "matchesPlayed": 12 },
+      "Aston Villa FC":        { "teamName": "Aston Villa FC",        "homeAttack": 1.30, "homeDefence": 0.95, "awayAttack": 1.05, "awayDefence": 1.10, "matchesPlayed": 12 },
+      "Chelsea FC":            { "teamName": "Chelsea FC",            "homeAttack": 1.25, "homeDefence": 0.90, "awayAttack": 1.15, "awayDefence": 1.00, "matchesPlayed": 12 },
+      "Tottenham Hotspur FC":  { "teamName": "Tottenham Hotspur FC",  "homeAttack": 1.35, "homeDefence": 1.00, "awayAttack": 1.20, "awayDefence": 1.10, "matchesPlayed": 12 },
+      "Newcastle United FC":   { "teamName": "Newcastle United FC",   "homeAttack": 1.25, "homeDefence": 0.90, "awayAttack": 1.10, "awayDefence": 1.05, "matchesPlayed": 12 }
+    }
   }
 }

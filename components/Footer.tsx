@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="mt-24 border-t border-hairline bg-mist/30">
       <div className="mx-auto max-w-6xl px-5 py-12">
-        <div className="grid gap-10 md:grid-cols-4">
+        <div className="grid gap-10 md:grid-cols-5">
           <div className="md:col-span-2">
             <p className="font-display text-xl font-extrabold tracking-tighter">
               Mint<span className="text-flag">score</span>
@@ -22,6 +22,7 @@ export default function Footer() {
               <li><Link href="/" className="hover:text-flag">Predictions</Link></li>
               <li><Link href="/bonuses" className="hover:text-flag">Bonuses</Link></li>
               <li><Link href="/learn" className="hover:text-flag">Learn</Link></li>
+              <li><Link href="/track-record" className="hover:text-flag">Track record</Link></li>
             </ul>
           </div>
 
@@ -35,6 +36,16 @@ export default function Footer() {
                   GambleAware ↗
                 </a>
               </li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-bone/40">Mintscore</p>
+            <ul className="mt-3 space-y-2 text-sm text-bone/80">
+              <li><Link href="/about" className="hover:text-flag">About</Link></li>
+              <li><Link href="/contact" className="hover:text-flag">Contact</Link></li>
+              <li><Link href="/privacy" className="hover:text-flag">Privacy</Link></li>
+              <li><Link href="/terms" className="hover:text-flag">Terms</Link></li>
             </ul>
           </div>
         </div>

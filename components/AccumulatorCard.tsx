@@ -2,9 +2,10 @@ import Link from "next/link";
 import type { Accumulator } from "@/lib/types";
 
 const TIER_COPY: Record<number, { headline: string; tagline: string; tone: "balanced" | "stretch" | "lottery" }> = {
-  10:   { headline: "10 odds",   tagline: "Safest of the day's big-confidence picks",   tone: "balanced" },
-  100:  { headline: "100 odds",  tagline: "Stretch acca — bigger payout, real variance", tone: "stretch" },
-  1000: { headline: "1000 odds", tagline: "Lottery ticket — fun to dream, brutal maths", tone: "lottery" },
+  10:    { headline: "10 odds",     tagline: "Safest of the day's big-confidence picks",   tone: "balanced" },
+  100:   { headline: "100 odds",    tagline: "Stretch acca — bigger payout, real variance", tone: "stretch" },
+  1000:  { headline: "1000 odds",   tagline: "Lottery ticket — fun to dream, brutal maths", tone: "lottery" },
+  10000: { headline: "10,000 odds", tagline: "Pure lottery — bet only what you'd burn",     tone: "lottery" },
 };
 
 const TONE_CLASSES: Record<"balanced" | "stretch" | "lottery", string> = {
@@ -23,7 +24,17 @@ function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
-export default function AccumulatorCard({ acc }: { acc: Accumulator }) {
+export default function AccumulatorCard({
+  acc,
+  historicalHitRate,
+  historicalSampleSize,
+}: {
+  acc: Accumulator;
+  /** Past hit rate for accas built at this tier, 0..1. Optional. */
+  historicalHitRate?: number;
+  /** How many past accas were used to compute the rate. */
+  historicalSampleSize?: number;
+}) {
   const meta = TIER_COPY[acc.targetOdds] ?? TIER_COPY[10];
   const tone = meta.tone;
   const hitPct = acc.jointProbability * 100;
@@ -55,6 +66,12 @@ export default function AccumulatorCard({ acc }: { acc: Accumulator }) {
         <span className="text-bone/50">
           1 in <span className="font-mono tabular text-bone/80">{acc.oneInX.toLocaleString()}</span>
         </span>
+        {historicalHitRate !== undefined && historicalSampleSize !== undefined && historicalSampleSize > 0 && (
+          <span className="text-bone/50">
+            History: <span className="font-mono tabular text-bone/80">{(historicalHitRate * 100).toFixed(0)}%</span>
+            <span className="ml-1 text-bone/40">(n={historicalSampleSize})</span>
+          </span>
+        )}
       </div>
 
       <ul className="mt-4 flex-1 space-y-2 border-t border-hairline pt-4">

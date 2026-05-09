@@ -21,8 +21,8 @@
 
 import type { MatchPrediction, Accumulator, AccumulatorLeg } from "./types";
 
-const MIN_LEG_PROB = 0.40; // reach into moderate-confidence picks for 1000-odds tier; safest-first sort keeps low-tier accas safe
-const MAX_LEGS = 18;       // hard cap — 1000-odd accas realistically need 14-17 legs
+const MIN_LEG_PROB = 0.35; // reach further down the confidence ladder for 10000-odds tier; safest-first sort keeps low-tier accas safe
+const MAX_LEGS = 22;       // hard cap — 10000-odd accas realistically need 18-21 legs
 
 interface CandidateLeg extends AccumulatorLeg {}
 
@@ -162,8 +162,46 @@ export function compileAccumulator(
 export function compileAllTargets(
   predictions: MatchPrediction[],
 ): { target: number; acc: Accumulator | null }[] {
-  return [10, 100, 1000].map(target => ({
+  return [10, 100, 1000, 10000].map(target => ({
     target,
     acc: compileAccumulator(predictions, target),
   }));
+}
+
+/**
+ * Per-league accumulators.
+ *
+ * Builds the safest possible 10-odds acca for each competition that has
+ * enough fixtures to sustain it. Returns leagues sorted by how many
+ * predictions they have available (richer leagues first). Leagues without
+ * enough material to build any acca are skipped silently.
+ */
+export function compilePerLeague(
+  predictions: MatchPrediction[],
+  target: number = 10,
+): Array<{
+  competitionCode: string;
+  competitionName: string;
+  acc: Accumulator;
+}> {
+  // Group predictions by competition.
+  const byLeague = new Map<string, { name: string; preds: MatchPrediction[] }>();
+  for (const p of predictions) {
+    const key = p.match.competitionCode;
+    if (!byLeague.has(key)) {
+      byLeague.set(key, { name: p.match.competition, preds: [] });
+    }
+    byLeague.get(key)!.preds.push(p);
+  }
+
+  const out: Array<{ competitionCode: string; competitionName: string; acc: Accumulator }> = [];
+  for (const [code, { name, preds }] of byLeague.entries()) {
+    if (preds.length < 3) continue; // need at least 3 fixtures to build something interesting
+    const acc = compileAccumulator(preds, target);
+    if (acc) out.push({ competitionCode: code, competitionName: name, acc });
+  }
+
+  // Sort by leagues with the most legs available (richest), tiebreak by name.
+  out.sort((a, b) => b.acc.legs.length - a.acc.legs.length || a.competitionName.localeCompare(b.competitionName));
+  return out;
 }
