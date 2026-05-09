@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://mintscore.app"),
   title: {
-    default: "Mintscore — Football predictions backed by maths, not vibes",
+    default: "Mintscore, Football predictions backed by maths, not vibes",
     template: "%s · Mintscore",
   },
   description:
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Mintscore" }],
   openGraph: {
     type: "website",
-    title: "Mintscore — Football predictions backed by maths",
+    title: "Mintscore, Football predictions backed by maths",
     description: "Calibrated probabilities, value-bet detection, and bankroll education.",
     siteName: "Mintscore",
   },

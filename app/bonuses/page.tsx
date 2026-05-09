@@ -22,7 +22,7 @@ export default function BonusesPage() {
         <p className="mt-5 max-w-2xl text-base text-bone/70">
           Welcome bonuses can be genuinely positive expected value if you read the rollover
           terms and use them correctly. Skip a bookmaker if the rollover is heavy or the min-odds
-          is steep — the bonus often won't survive the wagering.
+          is steep, the bonus often won't survive the wagering.
         </p>
       </header>
 

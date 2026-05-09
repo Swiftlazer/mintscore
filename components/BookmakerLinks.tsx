@@ -27,7 +27,7 @@ export default function BookmakerLinks({
         ))}
       </div>
       <p className="mt-2 text-[10px] text-bone/40">
-        Affiliate links — Mintscore earns commission if you sign up. Doesn't affect odds you receive.
+        Affiliate links, Mintscore earns commission if you sign up. Doesn't affect odds you receive.
       </p>
     </div>
   );

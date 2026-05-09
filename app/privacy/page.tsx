@@ -25,8 +25,8 @@ export default function PrivacyPage() {
         <ul className="mt-3 list-disc space-y-2 pl-6 text-bone/85">
           <li>Mintscore does not require accounts, logins, or personal information to use.</li>
           <li>We don't sell or rent your data.</li>
-          <li>We use Vercel for hosting and Google Search Console for analytics — neither of which we share data with beyond what's necessary to keep the site running and indexed.</li>
-          <li>If you click a bookmaker affiliate link, that bookmaker collects whatever data their own site collects — we have no control over that and you should read their privacy policy before signing up.</li>
+          <li>We use Vercel for hosting and Google Search Console for analytics, neither of which we share data with beyond what's necessary to keep the site running and indexed.</li>
+          <li>If you click a bookmaker affiliate link, that bookmaker collects whatever data their own site collects, we have no control over that and you should read their privacy policy before signing up.</li>
           <li>Cookies on Mintscore itself are limited to functional ones (e.g. remembering your favourite teams locally on your device).</li>
         </ul>
       </section>
@@ -101,7 +101,7 @@ export default function PrivacyPage() {
         </p>
         <ul className="list-disc space-y-2 pl-6">
           <li>Ask what data we hold about you (in practice this is virtually nothing because we operate without accounts).</li>
-          <li>Ask us to delete server log entries that may contain your IP — note that Vercel cycles these automatically anyway.</li>
+          <li>Ask us to delete server log entries that may contain your IP, note that Vercel cycles these automatically anyway.</li>
           <li>Clear your local data at any time by clearing your browser's site data for mintscore.com.ng.</li>
         </ul>
         <p>

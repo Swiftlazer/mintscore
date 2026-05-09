@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const match = await getMatchById(Number(id));
   if (!match) return { title: "Match not found" };
-  const title = `${match.home.name} vs ${match.away.name} — prediction & probabilities`;
+  const title = `${match.home.name} vs ${match.away.name}, prediction & probabilities`;
   return {
     title,
     description: `Statistical probabilities, expected goals, and value-bet analysis for ${match.home.name} vs ${match.away.name} in the ${match.competition}.`,
@@ -105,7 +105,7 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
               <div>
                 <p className="text-bone/50">Model edge</p>
                 <p className={`mt-1 font-mono tabular ${(p.value.edgePct ?? 0) > 0 ? "text-edge" : "text-bone"}`}>
-                  {p.value.edgePct != null ? `${p.value.edgePct >= 0 ? "+" : ""}${p.value.edgePct.toFixed(1)}%` : "—"}
+                  {p.value.edgePct != null ? `${p.value.edgePct >= 0 ? "+" : ""}${p.value.edgePct.toFixed(1)}%` : ", "}
                 </p>
               </div>
               <div>
@@ -121,11 +121,11 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
               {p.value.recommendation === "VALUE" && (
                 <>
                   Model rates the <span className="font-semibold text-edge">{p.value.outcome}</span> outcome higher
-                  than the market. Stake is at quarter-Kelly — conservative because models are imperfect and full Kelly is brutal on losing streaks.
+                  than the market. Stake is at quarter-Kelly, conservative because models are imperfect and full Kelly is brutal on losing streaks.
                 </>
               )}
               {p.value.recommendation === "FAIR" && "Market is roughly aligned with the model. No edge worth chasing here."}
-              {p.value.recommendation === "AVOID" && "Market disagrees strongly with the model. Best to skip — sit this one out."}
+              {p.value.recommendation === "AVOID" && "Market disagrees strongly with the model. Best to skip, sit this one out."}
             </p>
           </div>
         </section>
@@ -137,7 +137,7 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
           <div className="rounded-md border border-hairline bg-mist/40 p-5">
             <p className="text-xs text-bone/50">Expected goals (xG)</p>
             <p className="mt-1 font-display text-2xl font-extrabold tabular">
-              {p.expectedGoals.home.toFixed(2)} – {p.expectedGoals.away.toFixed(2)}
+              {p.expectedGoals.home.toFixed(2)} - {p.expectedGoals.away.toFixed(2)}
             </p>
           </div>
           <div className="rounded-md border border-hairline bg-mist/40 p-5">
@@ -162,7 +162,7 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
             <li key={`${s.home}-${s.away}`} className="flex items-center justify-between px-5 py-3">
               <div className="flex items-center gap-4">
                 <span className="font-mono text-xs text-bone/40">#{i + 1}</span>
-                <span className="font-display text-lg font-bold tabular">{s.home} – {s.away}</span>
+                <span className="font-display text-lg font-bold tabular">{s.home} - {s.away}</span>
               </div>
               <span className="font-mono text-sm tabular text-bone/70">{(s.prob * 100).toFixed(1)}%</span>
             </li>

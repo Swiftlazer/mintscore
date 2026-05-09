@@ -11,7 +11,7 @@ export default function Footer() {
             </p>
             <p className="mt-3 max-w-md text-sm text-bone/60">
               Football match probabilities derived from a Poisson goal-expectancy
-              model with Dixon-Coles low-score correction. We don't sell tips —
+              model with Dixon-Coles low-score correction. We don't sell tips , 
               we publish maths, openly.
             </p>
           </div>

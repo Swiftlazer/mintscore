@@ -24,7 +24,7 @@ export default function TermsPage() {
           <li>The Service is for adults 18+. Don't use it if you're under 18 or in a jurisdiction where gambling is prohibited.</li>
           <li>We're not your financial adviser, your bookmaker, or your insurance policy.</li>
           <li>Bookmaker affiliate links earn us commission. They don't change the odds you receive.</li>
-          <li>Don't try to scrape, abuse, or break the site — it's small, free, and run by one person.</li>
+          <li>Don't try to scrape, abuse, or break the site, it's small, free, and run by one person.</li>
         </ul>
       </section>
 
@@ -51,8 +51,8 @@ export default function TermsPage() {
         <p>
           Mintscore publishes statistical estimates of football match outcomes derived from a Poisson
           + Dixon-Coles model trained on historical data. <strong className="text-paper">These are
-          probabilities, not predictions. Outcomes are inherently uncertain and the model can — and
-          will — be wrong on any given match.</strong>
+          probabilities, not predictions. Outcomes are inherently uncertain and the model can, and
+          will, be wrong on any given match.</strong>
         </p>
         <p>
           The Service is provided "as-is" and "as available" with no warranty, express or implied,
@@ -107,7 +107,7 @@ export default function TermsPage() {
         <p>
           To the maximum extent permitted by applicable law, Mintscore and its operator shall not be
           liable for any direct, indirect, incidental, special, consequential, or exemplary damages
-          arising from or relating to your use of the Service — including but not limited to losses
+          arising from or relating to your use of the Service, including but not limited to losses
           incurred from acting on a prediction, value flag, accumulator selection, or affiliate
           referral.
         </p>

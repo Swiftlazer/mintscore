@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "How to reach Mintscore — for support, partnerships, feedback, and press.",
+  description: "How to reach Mintscore, for support, partnerships, feedback, and press.",
 };
 
 export default function ContactPage() {
@@ -14,7 +14,7 @@ export default function ContactPage() {
           Get in touch.
         </h1>
         <p className="mt-4 text-bone/70">
-          Pick the channel that matches your reason for reaching out — replies are usually within 48 hours.
+          Pick the channel that matches your reason for reaching out, replies are usually within 48 hours.
         </p>
       </header>
 
@@ -55,7 +55,7 @@ export default function ContactPage() {
         <div className="rounded-lg border border-warn/30 bg-warn/5 p-6">
           <p className="font-mono text-[11px] uppercase tracking-widest text-warn">Need urgent help?</p>
           <p className="mt-2 text-sm text-bone/85">
-            If you're struggling with gambling and need to talk to someone now, please don't email us —
+            If you're struggling with gambling and need to talk to someone now, please don't email us , 
             contact{" "}
             <a href="https://www.begambleaware.org/" target="_blank" rel="noopener noreferrer" className="underline">
               GambleAware

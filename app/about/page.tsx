@@ -19,7 +19,7 @@ export default function AboutPage() {
       <section className="mt-10 space-y-5 text-bone/85">
         <p>
           Mintscore is a Nigerian-built, Nigerian-focused platform that publishes statistical
-          probabilities for upcoming football matches across the world's major leagues —
+          probabilities for upcoming football matches across the world's major leagues , 
           Premier League, La Liga, Bundesliga, Serie A, Ligue 1, the Champions League, and
           international competitions.
         </p>
@@ -29,7 +29,7 @@ export default function AboutPage() {
           probability distribution for each match's outcome, derived from a Poisson goal-expectancy
           model with the Dixon-Coles low-score correction (a method first published in the Journal
           of the Royal Statistical Society in 1997 and still used by sharp bettors today). When the
-          market price disagrees with our model by enough to flag value, we say so — and we publish
+          market price disagrees with our model by enough to flag value, we say so, and we publish
           the maths so you can challenge it.
         </p>
 
@@ -38,14 +38,14 @@ export default function AboutPage() {
         </p>
 
         <ul className="list-disc space-y-2 pl-6">
-          <li><strong className="text-paper">Inform</strong> — give you a calibrated read on every match before you bet.</li>
-          <li><strong className="text-paper">Educate</strong> — explain expected value, bankroll management, and why most accumulators are mathematically losing propositions.</li>
-          <li><strong className="text-paper">Connect</strong> — surface trustworthy bookmakers and their welcome offers so you can place your bet without us ever asking for your money directly.</li>
+          <li><strong className="text-paper">Inform</strong>, give you a calibrated read on every match before you bet.</li>
+          <li><strong className="text-paper">Educate</strong>, explain expected value, bankroll management, and why most accumulators are mathematically losing propositions.</li>
+          <li><strong className="text-paper">Connect</strong>, surface trustworthy bookmakers and their welcome offers so you can place your bet without us ever asking for your money directly.</li>
         </ul>
 
         <p>
           Mintscore earns commission when readers sign up to bookmakers via our affiliate links.
-          That's our entire revenue model — we never ask you for a subscription, never sell tips,
+          That's our entire revenue model, we never ask you for a subscription, never sell tips,
           and never resell your data. If you want to see how we earn money,{" "}
           <a href="/bonuses" className="text-flag underline hover:text-paper">it's all listed openly here</a>.
         </p>

@@ -1,12 +1,13 @@
 import { getUpcomingMatches } from "@/lib/football-data";
 import { getMarketOdds } from "@/lib/odds-api";
 import { predictMatch } from "@/lib/predict-match";
-import { compileAllTargets, compilePerLeague } from "@/lib/accumulator";
 import { getAccaHistoryForTier } from "@/lib/backtest";
 import HomePageClient from "@/components/HomePageClient";
 import Link from "next/link";
 
 export const revalidate = 1800; // 30-minute ISR
+
+const TIERS = [10, 100, 1000, 10000];
 
 export default async function HomePage() {
   const matches = await getUpcomingMatches(3);
@@ -19,44 +20,17 @@ export default async function HomePage() {
     }),
   );
 
-  // Plain-object payload for the client component.
-  const dayMatches = predictions.map(p => ({
-    matchId: p.match.id,
-    homeId: p.match.home.id,
-    awayId: p.match.away.id,
-    homeName: p.match.home.name,
-    awayName: p.match.away.name,
-    homeShort: p.match.home.shortName,
-    awayShort: p.match.away.shortName,
-    competitionCode: p.match.competitionCode,
-    competition: p.match.competition,
-    utcDate: p.match.utcDate,
-    probabilities: p.probabilities,
-    expectedGoals: p.expectedGoals,
-    bttsProb: p.bttsProb,
-    over25Prob: p.over25Prob,
-    valueOutcome: p.value?.outcome ?? null,
-    valueRecommendation: p.value?.recommendation ?? null,
-    valueEdgePct: p.value?.edgePct ?? null,
-  }));
-
   const valueCount = predictions.filter(p => p.value?.recommendation === "VALUE").length;
 
-  // Compile accas across the day's most-confident model picks.
-  const horizonMs = 48 * 60 * 60 * 1000;
-  const now = Date.now();
-  const accaPool = predictions.filter(
-    p => new Date(p.match.utcDate).getTime() - now < horizonMs,
+  // Pull historical hit rate per tier from the backtesting database, indexed
+  // by target so the client can look up whichever tier it ends up rendering.
+  const historyEntries = await Promise.all(
+    TIERS.map(async target => {
+      const history = await getAccaHistoryForTier(target).catch(() => null);
+      return [target, history] as const;
+    }),
   );
-  const accas = compileAllTargets(accaPool);
-
-  // Pull historical hit rate per tier from the backtesting database.
-  const accaHistory = await Promise.all(
-    accas.map(({ target }) => getAccaHistoryForTier(target).catch(() => null)),
-  );
-
-  // Compile per-league accumulators.
-  const perLeague = compilePerLeague(accaPool, 10);
+  const accaHistoryByTier = Object.fromEntries(historyEntries) as Record<number, { hitRate: number; sampleSize: number } | null>;
 
   return (
     <div className="mx-auto max-w-6xl px-5 pt-12 pb-8">
@@ -69,8 +43,8 @@ export default async function HomePage() {
           <span className="italic text-bone/70">not predictions in disguise.</span>
         </h1>
         <p className="mt-5 max-w-2xl text-base text-bone/70 md:text-lg">
-          Every match below comes with the model's outcome distribution, expected goals,
-          and — where market odds exist — a flag if there's measurable value. We don't
+          Every match below shows the model's outcome distribution and expected goals.
+          Where market odds are available, we flag matches with measurable value. We don't
           tell you what to bet. We show you the maths and let you decide.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
@@ -103,10 +77,8 @@ export default async function HomePage() {
 
       {predictions.length > 0 && (
         <HomePageClient
-          matches={dayMatches}
-          mainAccas={accas}
-          perLeague={perLeague}
-          accaHistory={accaHistory}
+          predictions={predictions}
+          accaHistoryByTier={accaHistoryByTier}
         />
       )}
     </div>

@@ -4,37 +4,11 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { useFavorites } from "@/lib/favorites";
 import { useLeagueFilter, useTierFilter } from "@/lib/filters";
+import { compileAllTargets, compilePerLeague } from "@/lib/accumulator";
 import FavoriteStar from "./FavoriteStar";
 import FilterPills from "./FilterPills";
 import AccumulatorCard from "./AccumulatorCard";
-import type { Accumulator } from "@/lib/types";
-
-/** Plain payload from the server — keep this in sync with app/page.tsx. */
-export interface DayMatchPayload {
-  matchId: number;
-  homeId: number;
-  awayId: number;
-  homeName: string;
-  awayName: string;
-  homeShort: string;
-  awayShort: string;
-  competitionCode: string;
-  competition: string;
-  utcDate: string;
-  probabilities: { home: number; draw: number; away: number };
-  expectedGoals: { home: number; away: number };
-  bttsProb: number;
-  over25Prob: number;
-  valueOutcome: "home" | "draw" | "away" | null;
-  valueRecommendation: "VALUE" | "FAIR" | "AVOID" | "NO_DATA" | null;
-  valueEdgePct: number | null;
-}
-
-interface PerLeagueEntry {
-  competitionCode: string;
-  competitionName: string;
-  acc: Accumulator;
-}
+import type { MatchPrediction } from "@/lib/types";
 
 interface HistoryEntry {
   hitRate: number;
@@ -42,10 +16,11 @@ interface HistoryEntry {
 }
 
 interface Props {
-  matches: DayMatchPayload[];
-  mainAccas: Array<{ target: number; acc: Accumulator | null }>;
-  perLeague: PerLeagueEntry[];
-  accaHistory: Array<HistoryEntry | null>;
+  /** Full predictions with all model output. The client filters and recomposes
+      accas from these so league + odds filters can affect every section. */
+  predictions: MatchPrediction[];
+  /** Historical hit rates per tier, indexed by target odds (10, 100, 1000, 10000). */
+  accaHistoryByTier: Record<number, HistoryEntry | null>;
 }
 
 const COMP_BADGE: Record<string, string> = {
@@ -61,56 +36,74 @@ const TIER_LABELS: Record<number, string> = {
   10000: "10k odds",
 };
 
-export default function HomePageClient({ matches, mainAccas, perLeague, accaHistory }: Props) {
+const HORIZON_MS = 48 * 60 * 60 * 1000;
+
+export default function HomePageClient({ predictions, accaHistoryByTier }: Props) {
   const { isFavorite, toggle, hydrated: favHydrated } = useFavorites();
   const { active: activeLeagues, setActive: setLeagues, hydrated: lFilterHydrated } = useLeagueFilter();
   const { active: activeTiers,   setActive: setTiers,   hydrated: tFilterHydrated } = useTierFilter();
 
-  // Compute available leagues from the data so we don't show pills for empty leagues.
+  /* ---------- Available filter options derived from data ---------- */
   const leagueOptions = useMemo(() => {
     const present = new Map<string, string>();
-    for (const m of matches) present.set(m.competitionCode, COMP_BADGE[m.competitionCode] ?? m.competition);
-    for (const p of perLeague) if (!present.has(p.competitionCode)) present.set(p.competitionCode, COMP_BADGE[p.competitionCode] ?? p.competitionName);
+    for (const p of predictions) {
+      present.set(p.match.competitionCode, COMP_BADGE[p.match.competitionCode] ?? p.match.competition);
+    }
     return Array.from(present.entries())
       .sort(([, a], [, b]) => a.localeCompare(b))
       .map(([value, label]) => ({ value, label }));
-  }, [matches, perLeague]);
+  }, [predictions]);
 
   const tierOptions = useMemo(
-    () => mainAccas.map(({ target }) => ({ value: target, label: TIER_LABELS[target] ?? `${target} odds` })),
-    [mainAccas],
+    () => [10, 100, 1000, 10000].map(t => ({ value: t, label: TIER_LABELS[t] })),
+    [],
   );
 
-  // Apply filters (note: when active is null/empty, pass everything through unchanged).
-  const filteredMainAccas = useMemo(() => {
-    if (!activeTiers || activeTiers.size === 0) return mainAccas;
-    return mainAccas.filter(({ target }) => activeTiers.has(target));
-  }, [mainAccas, activeTiers]);
+  /* ---------- Filter the prediction pool by league ---------- */
+  const filteredPredictions = useMemo(() => {
+    if (!activeLeagues || activeLeagues.size === 0) return predictions;
+    return predictions.filter(p => activeLeagues.has(p.match.competitionCode));
+  }, [predictions, activeLeagues]);
 
-  const filteredPerLeague = useMemo(() => {
-    if (!activeLeagues || activeLeagues.size === 0) return perLeague;
-    return perLeague.filter(p => activeLeagues.has(p.competitionCode));
-  }, [perLeague, activeLeagues]);
+  /* ---------- Recompose accas from filtered predictions ---------- */
+  // Pool is the next 48 hours of fixtures from the filtered set.
+  const accaPool = useMemo(() => {
+    const now = Date.now();
+    return filteredPredictions.filter(
+      p => new Date(p.match.utcDate).getTime() - now < HORIZON_MS,
+    );
+  }, [filteredPredictions]);
 
-  const filteredMatches = useMemo(() => {
-    if (!activeLeagues || activeLeagues.size === 0) return matches;
-    return matches.filter(m => activeLeagues.has(m.competitionCode));
-  }, [matches, activeLeagues]);
+  const allMainAccas = useMemo(() => compileAllTargets(accaPool), [accaPool]);
+  const allPerLeague = useMemo(() => compilePerLeague(accaPool, 10), [accaPool]);
 
-  // Split favourited matches off the top.
+  /* ---------- Apply odds-tier filter to ALL accas ---------- */
+  // Main 4-tier section: filter by selected target odds.
+  const visibleMainAccas = useMemo(() => {
+    if (!activeTiers || activeTiers.size === 0) return allMainAccas;
+    return allMainAccas.filter(({ target }) => activeTiers.has(target));
+  }, [allMainAccas, activeTiers]);
+
+  // Per-league section: every per-league acca is at 10 odds, so it's
+  // visible only if 10 is in the selected tiers (or no tier filter).
+  const visiblePerLeague = useMemo(() => {
+    const tierActive = !activeTiers || activeTiers.size === 0 || activeTiers.has(10);
+    return tierActive ? allPerLeague : [];
+  }, [allPerLeague, activeTiers]);
+
+  /* ---------- Match list grouping ---------- */
   const { favourited, groupedRest, days } = useMemo(() => {
-    const fav: DayMatchPayload[] = [];
-    const oth: DayMatchPayload[] = [];
-    for (const m of filteredMatches) {
-      // Before localStorage hydrates we treat nothing as favourited (avoids SSR/CSR mismatch).
-      if (favHydrated && (isFavorite(m.homeId) || isFavorite(m.awayId))) fav.push(m);
-      else oth.push(m);
+    const fav: MatchPrediction[] = [];
+    const oth: MatchPrediction[] = [];
+    for (const p of filteredPredictions) {
+      if (favHydrated && (isFavorite(p.match.home.id) || isFavorite(p.match.away.id))) fav.push(p);
+      else oth.push(p);
     }
-    const groupByDay = (arr: DayMatchPayload[]) => {
-      const g: Record<string, DayMatchPayload[]> = {};
-      for (const m of arr) {
-        const day = new Date(m.utcDate).toISOString().slice(0, 10);
-        (g[day] ??= []).push(m);
+    const groupByDay = (arr: MatchPrediction[]) => {
+      const g: Record<string, MatchPrediction[]> = {};
+      for (const p of arr) {
+        const day = new Date(p.match.utcDate).toISOString().slice(0, 10);
+        (g[day] ??= []).push(p);
       }
       return g;
     };
@@ -118,16 +111,14 @@ export default function HomePageClient({ matches, mainAccas, perLeague, accaHist
     const allDays = new Set<string>();
     Object.keys(groupedR).forEach(d => allDays.add(d));
     return { favourited: fav, groupedRest: groupedR, days: [...allDays].sort() };
-  }, [filteredMatches, isFavorite, favHydrated]);
+  }, [filteredPredictions, isFavorite, favHydrated]);
 
-  const anyMainAcca = filteredMainAccas.some(a => a.acc !== null);
+  const anyMainAcca = visibleMainAccas.some(a => a.acc !== null);
   const filtersHydrated = lFilterHydrated && tFilterHydrated;
   const noResultsAfterFilter =
     filtersHydrated &&
-    filteredMatches.length === 0 &&
-    filteredPerLeague.length === 0 &&
-    !anyMainAcca &&
-    matches.length > 0; // there IS data, the filter just hid it all
+    filteredPredictions.length === 0 &&
+    predictions.length > 0;
 
   return (
     <>
@@ -153,8 +144,8 @@ export default function HomePageClient({ matches, mainAccas, perLeague, accaHist
             )}
           </div>
           <p className="mt-3 text-[10px] text-bone/40">
-            Filters save to your device — they'll still be set next time you visit.
-            League filter applies to per-league accas and the match list. Odds filter applies to the main acca tiers.
+            Filters save to your device, so they stay set next time you visit.
+            Both filters apply globally across every accumulator section and the match list below.
           </p>
         </section>
       )}
@@ -176,10 +167,8 @@ export default function HomePageClient({ matches, mainAccas, perLeague, accaHist
             </Link>
           </div>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {filteredMainAccas.map(({ target, acc }) => {
-              // Find the original index for history lookup
-              const originalIdx = mainAccas.findIndex(a => a.target === target);
-              const history = originalIdx >= 0 ? accaHistory[originalIdx] : null;
+            {visibleMainAccas.map(({ target, acc }) => {
+              const history = accaHistoryByTier[target] ?? null;
               return (
                 <div key={target}>
                   {acc ? (
@@ -194,7 +183,7 @@ export default function HomePageClient({ matches, mainAccas, perLeague, accaHist
                         {target.toLocaleString()} odds
                       </p>
                       <p className="mt-3 text-sm text-bone/60">
-                        Not enough high-confidence picks today to build this tier.
+                        Not enough high-confidence picks at the current filters.
                       </p>
                     </div>
                   )}
@@ -203,15 +192,15 @@ export default function HomePageClient({ matches, mainAccas, perLeague, accaHist
             })}
           </div>
           <p className="mt-4 max-w-3xl text-xs text-bone/50">
-            Joint probability assumes leg outcomes are independent — they're not, perfectly. Real
-            variance is higher than the model shows. Accumulators amplify both upside and model error;
-            keep stakes small and treat the 1000-odd and 10,000-odd slots as entertainment, not investment.
+            Joint probability assumes leg outcomes are independent, which they aren't perfectly.
+            Real variance is higher than the model shows. Accumulators amplify both upside and model error,
+            so keep stakes small. Treat the 1000-odd and 10,000-odd slots as entertainment, not investment.
           </p>
         </section>
       )}
 
       {/* ---------- Per-league accas ---------- */}
-      {filteredPerLeague.length > 0 && (
+      {visiblePerLeague.length > 0 && (
         <section className="mt-12">
           <div className="mb-5">
             <p className="font-mono text-[11px] uppercase tracking-widest text-flag">
@@ -221,12 +210,12 @@ export default function HomePageClient({ matches, mainAccas, perLeague, accaHist
               Safest 10-odds acca for each league
             </h2>
             <p className="mt-2 max-w-3xl text-sm text-bone/60">
-              Same algorithm but built only from a single competition's fixtures —
+              Same algorithm but built only from a single competition's fixtures,
               useful if you prefer to bet within one league.
             </p>
           </div>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {filteredPerLeague.map(({ competitionCode, competitionName, acc }) => (
+            {visiblePerLeague.map(({ competitionCode, competitionName, acc }) => (
               <div key={competitionCode}>
                 <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-bone/50">
                   {competitionName}
@@ -238,7 +227,7 @@ export default function HomePageClient({ matches, mainAccas, perLeague, accaHist
         </section>
       )}
 
-      {/* ---------- Match list (favourites, then by date) ---------- */}
+      {/* ---------- Match list ---------- */}
       {favourited.length > 0 && (
         <section className="mt-12">
           <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold tracking-tight text-flag">
@@ -246,8 +235,8 @@ export default function HomePageClient({ matches, mainAccas, perLeague, accaHist
             Your teams ({favourited.length})
           </h2>
           <div className="grid gap-3 md:grid-cols-2">
-            {favourited.map(m => (
-              <MatchRow key={m.matchId} m={m} isFavorite={isFavorite} toggle={toggle} highlight />
+            {favourited.map(p => (
+              <MatchRow key={p.match.id} p={p} isFavorite={isFavorite} toggle={toggle} highlight />
             ))}
           </div>
         </section>
@@ -262,8 +251,8 @@ export default function HomePageClient({ matches, mainAccas, perLeague, accaHist
               {new Date(day).toLocaleDateString([], { weekday: "long", day: "numeric", month: "long" })}
             </h2>
             <div className="grid gap-3 md:grid-cols-2">
-              {dayItems.map(m => (
-                <MatchRow key={m.matchId} m={m} isFavorite={isFavorite} toggle={toggle} />
+              {dayItems.map(p => (
+                <MatchRow key={p.match.id} p={p} isFavorite={isFavorite} toggle={toggle} />
               ))}
             </div>
           </section>
@@ -279,10 +268,10 @@ export default function HomePageClient({ matches, mainAccas, perLeague, accaHist
         </section>
       )}
 
-      {favHydrated && favourited.length === 0 && filteredMatches.length > 0 && (
+      {favHydrated && favourited.length === 0 && filteredPredictions.length > 0 && (
         <p className="mt-12 max-w-3xl text-xs text-bone/50">
           Tip: tap the ☆ next to a team's name to follow them. Their matches will pin to the top
-          of this page across visits — saved locally on your device, no account needed.
+          of this page across visits, saved locally on your device, no account needed.
         </p>
       )}
     </>
@@ -291,28 +280,29 @@ export default function HomePageClient({ matches, mainAccas, perLeague, accaHist
 
 /* ---------- internal: a single match row ---------- */
 function MatchRow({
-  m,
+  p,
   isFavorite,
   toggle,
   highlight,
 }: {
-  m: DayMatchPayload;
+  p: MatchPrediction;
   isFavorite: (id: number) => boolean;
   toggle: (id: number) => void;
   highlight?: boolean;
 }) {
+  const m = p.match;
   const date = new Date(m.utcDate);
   const time = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   const day = date.toLocaleDateString([], { weekday: "short", day: "numeric", month: "short" });
 
-  const isValue = m.valueRecommendation === "VALUE";
-  const highlightOutcome = m.valueOutcome;
+  const isValue = p.value?.recommendation === "VALUE";
+  const highlightOutcome = p.value?.outcome ?? null;
 
-  const homeFav = isFavorite(m.homeId);
-  const awayFav = isFavorite(m.awayId);
+  const homeFav = isFavorite(m.home.id);
+  const awayFav = isFavorite(m.away.id);
 
-  const h = Math.round(m.probabilities.home * 100);
-  const d = Math.round(m.probabilities.draw * 100);
+  const h = Math.round(p.probabilities.home * 100);
+  const d = Math.round(p.probabilities.draw * 100);
   const a = Math.max(0, 100 - h - d);
 
   return (
@@ -333,24 +323,24 @@ function MatchRow({
         <span>{day} · {time}</span>
       </div>
 
-      <Link href={`/matches/${m.matchId}`} className="mt-3 block">
+      <Link href={`/matches/${m.id}`} className="mt-3 block">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
           <div className="flex items-center justify-end gap-2">
-            <p className="font-display text-lg font-semibold leading-tight md:text-xl">{m.homeShort}</p>
+            <p className="font-display text-lg font-semibold leading-tight md:text-xl">{m.home.shortName}</p>
             <FavoriteStar
               active={homeFav}
-              onToggle={() => toggle(m.homeId)}
-              ariaLabel={`${homeFav ? "Unfollow" : "Follow"} ${m.homeShort}`}
+              onToggle={() => toggle(m.home.id)}
+              ariaLabel={`${homeFav ? "Unfollow" : "Follow"} ${m.home.shortName}`}
             />
           </div>
           <span className="font-mono text-sm text-bone/40">vs</span>
           <div className="flex items-center gap-2">
             <FavoriteStar
               active={awayFav}
-              onToggle={() => toggle(m.awayId)}
-              ariaLabel={`${awayFav ? "Unfollow" : "Follow"} ${m.awayShort}`}
+              onToggle={() => toggle(m.away.id)}
+              ariaLabel={`${awayFav ? "Unfollow" : "Follow"} ${m.away.shortName}`}
             />
-            <p className="font-display text-lg font-semibold leading-tight md:text-xl">{m.awayShort}</p>
+            <p className="font-display text-lg font-semibold leading-tight md:text-xl">{m.away.shortName}</p>
           </div>
         </div>
 
@@ -376,22 +366,22 @@ function MatchRow({
             </div>
           </div>
           <div className="mt-1.5 flex justify-between text-[10px] uppercase tracking-widest text-bone/40">
-            <span>{m.homeShort} win</span>
+            <span>{m.home.shortName} win</span>
             <span>Draw</span>
-            <span>{m.awayShort} win</span>
+            <span>{m.away.shortName} win</span>
           </div>
         </div>
 
         <div className="mt-4 flex items-center justify-between text-xs text-bone/50">
           <span className="tabular">
-            xG <span className="text-bone/80">{m.expectedGoals.home.toFixed(2)}–{m.expectedGoals.away.toFixed(2)}</span>
+            xG <span className="text-bone/80">{p.expectedGoals.home.toFixed(2)}-{p.expectedGoals.away.toFixed(2)}</span>
           </span>
-          {m.valueEdgePct != null && m.valueOutcome && (
+          {p.value?.edgePct != null && p.value.outcome && (
             <span className={`font-mono tabular ${isValue ? "text-edge" : "text-bone/50"}`}>
-              edge {m.valueEdgePct >= 0 ? "+" : ""}{m.valueEdgePct.toFixed(1)}%
+              edge {p.value.edgePct >= 0 ? "+" : ""}{p.value.edgePct.toFixed(1)}%
             </span>
           )}
-          <span className="tabular">BTTS {Math.round(m.bttsProb * 100)}%</span>
+          <span className="tabular">BTTS {Math.round(p.bttsProb * 100)}%</span>
         </div>
       </Link>
     </div>

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Learn — expected value, bankroll, and how the model works",
-  description: "Understand expected value, bankroll management, and responsible gambling. The maths matter — most punters lose because they don't know it.",
+  title: "Learn, expected value, bankroll, and how the model works",
+  description: "Understand expected value, bankroll management, and responsible gambling. The maths matter, most punters lose because they don't know it.",
 };
 
 export default function LearnPage() {
@@ -24,7 +24,7 @@ export default function LearnPage() {
       <section id="ev" className="mt-12">
         <h2 className="font-display text-3xl font-bold tracking-tight">1 · Expected Value (EV)</h2>
         <p className="mt-4 text-bone/80">
-          Every bet has an expected value — what it pays on average over many repetitions.
+          Every bet has an expected value, what it pays on average over many repetitions.
           A simple formula:
         </p>
         <pre className="mt-4 overflow-x-auto rounded-md border border-hairline bg-mist/40 p-5 font-mono text-sm text-flag tabular">
@@ -37,7 +37,7 @@ EV = (probability of winning × profit if you win) − (probability of losing ×
 {`profit if win  = ₦1,000 × (2.50 − 1) = ₦1,500
 EV  = (0.45 × ₦1,500) − (0.55 × ₦1,000)
     = ₦675 − ₦550
-    = +₦125 per bet (positive — value bet)`}
+    = +₦125 per bet (positive, value bet)`}
         </pre>
         <p className="mt-4 text-bone/80">
           Flip it. Same odds, but you only think there's a 35% chance:
@@ -45,11 +45,11 @@ EV  = (0.45 × ₦1,500) − (0.55 × ₦1,000)
         <pre className="mt-4 overflow-x-auto rounded-md border border-hairline bg-mist/40 p-5 font-mono text-sm tabular">
 {`EV = (0.35 × ₦1,500) − (0.65 × ₦1,000)
    = ₦525 − ₦650
-   = −₦125 per bet (negative — sucker bet)`}
+   = −₦125 per bet (negative, sucker bet)`}
         </pre>
         <p className="mt-4 text-bone/80">
           Bookmakers' edge is built into the odds. To win long-term you need bets where your
-          estimate of probability is more accurate than the bookmaker's — that's the only edge that exists.
+          estimate of probability is more accurate than the bookmaker's, that's the only edge that exists.
           When you see the green <span className="font-mono text-edge">VALUE</span> tag on Mintscore,
           it means our model thinks the bookmaker has mispriced the line.
         </p>
@@ -69,14 +69,14 @@ EV  = (0.45 × ₦1,500) − (0.55 × ₦1,000)
 stake fraction = (edge as decimal) ÷ (decimal odds − 1)
         </pre>
         <p className="mt-4 text-bone/80">
-          Full Kelly is theoretically optimal but emotionally brutal — losing streaks chew through
+          Full Kelly is theoretically optimal but emotionally brutal, losing streaks chew through
           your bankroll fast and your model is never as accurate as you think. <span className="font-semibold text-paper">Use quarter-Kelly</span> (the
           stake we recommend on each match): same expected growth direction, far less variance.
           Even quarter-Kelly will rarely tell you to stake more than 2-3% of bankroll on a single bet.
         </p>
         <p className="mt-4 rounded-md border border-flag/30 bg-flag/5 p-4 text-sm text-bone/90">
           <span className="font-semibold text-flag">Rule of thumb:</span> if you find yourself wanting
-          to stake 10%+ of your bankroll on a single bet, it's not edge talking — it's tilt.
+          to stake 10%+ of your bankroll on a single bet, it's not edge talking, it's tilt.
         </p>
       </section>
 
@@ -89,7 +89,7 @@ stake fraction = (edge as decimal) ÷ (decimal odds − 1)
           house edge has gone from "you'll bleed slowly" to "you're funding the building."
         </p>
         <p className="mt-4 text-bone/80">
-          Singles or short doubles on value bets beat 10-leg accumulators long-term — every time, by
+          Singles or short doubles on value bets beat 10-leg accumulators long-term, every time, by
           a lot. If you must build accumulators, keep them to 2-3 legs and only on selections
           flagged as value.
         </p>
@@ -104,7 +104,7 @@ stake fraction = (edge as decimal) ÷ (decimal odds − 1)
         </p>
         <p className="mt-4 text-bone/80">
           From those two numbers we build a full distribution of possible scorelines using the
-          <span className="font-semibold"> Poisson distribution</span> — the standard statistical model
+          <span className="font-semibold"> Poisson distribution</span>, the standard statistical model
           for goal counts. We then apply the <span className="font-semibold">Dixon-Coles correction</span> (Dixon &
           Coles, 1997, JRSS) to fix a known weakness in plain Poisson: real football has more 0-0,
           1-0 and 0-1 results than independent Poisson predicts.
@@ -112,7 +112,7 @@ stake fraction = (edge as decimal) ÷ (decimal odds − 1)
         <p className="mt-4 text-bone/80">
           Sum the joint probabilities of all home-win scorelines, all draws, and all away-win
           scorelines, and you get the 1X2 probabilities you see on every match page. That's the entire
-          method. No insider tips, no AI black box, no "guaranteed wins" — published openly so you
+          method. No insider tips, no AI black box, no "guaranteed wins", published openly so you
           can challenge it if you spot a flaw.
         </p>
         <p className="mt-4 text-bone/80">
@@ -136,15 +136,15 @@ stake fraction = (edge as decimal) ÷ (decimal odds − 1)
           <li>You can't stick to a budget you set yourself.</li>
         </ul>
         <p className="mt-4 text-bone/90">
-          If two or more of these sound familiar, it's time to step back. There's no shame in it —
+          If two or more of these sound familiar, it's time to step back. There's no shame in it , 
           gambling products are engineered to be sticky.
         </p>
         <p className="mt-4 text-bone/90 font-semibold">If you need help:</p>
         <ul className="mt-2 list-disc space-y-1 pl-6 text-bone/85">
-          <li><a href="https://www.begambleaware.org/" target="_blank" rel="noopener noreferrer" className="text-flag underline">GambleAware</a> — free, anonymous, 24/7 chat.</li>
+          <li><a href="https://www.begambleaware.org/" target="_blank" rel="noopener noreferrer" className="text-flag underline">GambleAware</a>, free, anonymous, 24/7 chat.</li>
           <li>National Lottery Regulatory Commission (Nigeria): +234 9 461 0046.</li>
-          <li>Gamblers Anonymous Nigeria: search "GA Nigeria meetings" — meetings in Lagos, Abuja, PH.</li>
-          <li>Most bookmakers offer self-exclusion in account settings — use it without hesitation.</li>
+          <li>Gamblers Anonymous Nigeria: search "GA Nigeria meetings", meetings in Lagos, Abuja, PH.</li>
+          <li>Most bookmakers offer self-exclusion in account settings, use it without hesitation.</li>
         </ul>
       </section>
     </article>

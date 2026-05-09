@@ -54,7 +54,7 @@ export default function MatchCard({ p }: { p: MatchPrediction }) {
 
       <div className="mt-4 flex items-center justify-between text-xs text-bone/50">
         <span className="tabular">
-          xG <span className="text-bone/80">{p.expectedGoals.home.toFixed(2)}–{p.expectedGoals.away.toFixed(2)}</span>
+          xG <span className="text-bone/80">{p.expectedGoals.home.toFixed(2)}-{p.expectedGoals.away.toFixed(2)}</span>
         </span>
         {p.value?.edgePct != null && p.value.outcome && (
           <span className={`font-mono tabular ${isValue ? "text-edge" : "text-bone/50"}`}>

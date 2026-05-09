@@ -1,6 +1,6 @@
 import type { OutcomeProbabilities } from "@/lib/types";
 
-/** Pick the outcome with the highest probability — used when no explicit highlight is given. */
+/** Pick the outcome with the highest probability, used when no explicit highlight is given. */
 function strongestOutcome(probs: OutcomeProbabilities): "home" | "draw" | "away" {
   if (probs.home >= probs.draw && probs.home >= probs.away) return "home";
   if (probs.away >= probs.draw) return "away";
@@ -16,7 +16,7 @@ export default function ProbabilityBar({
   probs: OutcomeProbabilities;
   /**
    * Outcome to highlight in the accent colour. If null/undefined, the
-   * bar falls back to highlighting the model's strongest pick — so you
+   * bar falls back to highlighting the model's strongest pick, so you
    * always get a clear visual cue, even when market odds aren't available.
    */
   highlight?: "home" | "draw" | "away" | null;

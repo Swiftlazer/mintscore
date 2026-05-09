@@ -1,11 +1,12 @@
 import Link from "next/link";
 import type { Accumulator } from "@/lib/types";
+import ShareButtons from "./ShareButtons";
 
 const TIER_COPY: Record<number, { headline: string; tagline: string; tone: "balanced" | "stretch" | "lottery" }> = {
   10:    { headline: "10 odds",     tagline: "Safest of the day's big-confidence picks",   tone: "balanced" },
-  100:   { headline: "100 odds",    tagline: "Stretch acca — bigger payout, real variance", tone: "stretch" },
-  1000:  { headline: "1000 odds",   tagline: "Lottery ticket — fun to dream, brutal maths", tone: "lottery" },
-  10000: { headline: "10,000 odds", tagline: "Pure lottery — bet only what you'd burn",     tone: "lottery" },
+  100:   { headline: "100 odds",    tagline: "Stretch acca, bigger payout, real variance", tone: "stretch" },
+  1000:  { headline: "1000 odds",   tagline: "Lottery ticket, fun to dream, brutal maths", tone: "lottery" },
+  10000: { headline: "10,000 odds", tagline: "Pure lottery, bet only what you'd burn",     tone: "lottery" },
 };
 
 const TONE_CLASSES: Record<"balanced" | "stretch" | "lottery", string> = {
@@ -99,6 +100,15 @@ export default function AccumulatorCard({
           </li>
         ))}
       </ul>
+
+      <div className="mt-4 border-t border-hairline pt-3">
+        <ShareButtons
+          compact
+          title={`Today's ${meta.headline} acca on Mintscore`}
+          description={`${acc.legs.length} legs combining at ${acc.combinedFairOdds < 100 ? acc.combinedFairOdds.toFixed(2) : Math.round(acc.combinedFairOdds).toLocaleString()} odds, model hit rate ~${hitPct < 1 ? hitPct.toFixed(2) : hitPct.toFixed(1)}%.`}
+          url={process.env.NEXT_PUBLIC_SITE_URL ?? "https://mintscore.com.ng"}
+        />
+      </div>
     </div>
   );
 }

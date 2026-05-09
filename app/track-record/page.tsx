@@ -9,7 +9,7 @@ import {
 
 export const metadata: Metadata = {
   title: "Track record",
-  description: "Historical accuracy of Mintscore's predictions, broken down by market and competition. Honest reporting — wins and losses both.",
+  description: "Historical accuracy of Mintscore's predictions, broken down by market and competition. Honest reporting, wins and losses both.",
 };
 
 export const revalidate = 1800; // refresh every 30 minutes
@@ -34,7 +34,7 @@ export default async function TrackRecordPage() {
         </h1>
         <p className="mt-5 max-w-2xl text-base text-bone/70 md:text-lg">
           Every prediction we publish is logged before kickoff and matched against the actual
-          result after final whistle. This page reports those outcomes — not curated highlights, the
+          result after final whistle. This page reports those outcomes, not curated highlights, the
           full tape. If the model is wrong on something, it's recorded here.
         </p>
       </header>
@@ -133,7 +133,7 @@ export default async function TrackRecordPage() {
               <li key={r.matchId} className="rounded-md border border-hairline bg-mist/40 p-5">
                 <div className="flex items-baseline justify-between gap-3">
                   <Link href={`/matches/${r.matchId}`} className="font-display text-lg font-bold tracking-tight hover:text-flag">
-                    {r.homeName} <span className="text-bone/40 mx-1">{r.homeGoals}–{r.awayGoals}</span> {r.awayName}
+                    {r.homeName} <span className="text-bone/40 mx-1">{r.homeGoals}-{r.awayGoals}</span> {r.awayName}
                   </Link>
                   <span className="font-mono text-[10px] uppercase tracking-widest text-bone/40 shrink-0">
                     {r.competitionName}
@@ -165,7 +165,7 @@ export default async function TrackRecordPage() {
       <p className="mt-12 text-xs text-bone/50">
         Methodology: predictions are snapshotted at 03:00 UTC daily for matches in the next 48
         hours. Results are pulled from Football-Data.org as soon as matches finish. We log all
-        predictions before kickoff — there's no cherry-picking.
+        predictions before kickoff, there's no cherry-picking.
       </p>
     </article>
   );

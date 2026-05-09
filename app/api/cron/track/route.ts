@@ -292,7 +292,7 @@ export async function GET(req: NextRequest) {
   if (!sql) {
     return NextResponse.json({
       ok: false,
-      error: "DATABASE_URL not set — backtesting disabled",
+      error: "DATABASE_URL not set, backtesting disabled",
     }, { status: 503 });
   }
 
