@@ -1,5 +1,12 @@
 import type { OutcomeProbabilities } from "@/lib/types";
 
+/** Pick the outcome with the highest probability — used when no explicit highlight is given. */
+function strongestOutcome(probs: OutcomeProbabilities): "home" | "draw" | "away" {
+  if (probs.home >= probs.draw && probs.home >= probs.away) return "home";
+  if (probs.away >= probs.draw) return "away";
+  return "draw";
+}
+
 export default function ProbabilityBar({
   probs,
   highlight,
@@ -7,6 +14,11 @@ export default function ProbabilityBar({
   awayLabel = "2",
 }: {
   probs: OutcomeProbabilities;
+  /**
+   * Outcome to highlight in the accent colour. If null/undefined, the
+   * bar falls back to highlighting the model's strongest pick — so you
+   * always get a clear visual cue, even when market odds aren't available.
+   */
   highlight?: "home" | "draw" | "away" | null;
   homeLabel?: string;
   awayLabel?: string;
@@ -14,6 +26,10 @@ export default function ProbabilityBar({
   const h = Math.round(probs.home * 100);
   const d = Math.round(probs.draw * 100);
   const a = Math.max(0, 100 - h - d); // ensures the three add to 100
+
+  // Default highlight: model's strongest pick. Caller can pass an explicit
+  // outcome (e.g. value-bet outcome) to override.
+  const effectiveHighlight = highlight ?? strongestOutcome(probs);
 
   const cell = (
     pct: number,
@@ -42,9 +58,9 @@ export default function ProbabilityBar({
   return (
     <div>
       <div className="flex w-full overflow-hidden rounded">
-        {cell(h, homeLabel, highlight === "home", "left")}
-        {cell(d, "Draw", highlight === "draw", "middle")}
-        {cell(a, awayLabel, highlight === "away", "right")}
+        {cell(h, homeLabel, effectiveHighlight === "home", "left")}
+        {cell(d, "Draw",     effectiveHighlight === "draw", "middle")}
+        {cell(a, awayLabel, effectiveHighlight === "away", "right")}
       </div>
       <div className="mt-1.5 flex justify-between text-[10px] uppercase tracking-widest text-bone/40">
         <span>{homeLabel} win</span>
