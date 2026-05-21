@@ -23,7 +23,10 @@ interface FdMatch {
   competition: { code: string; name: string };
   homeTeam: { id: number; name: string; shortName?: string; tla?: string; crest?: string };
   awayTeam: { id: number; name: string; shortName?: string; tla?: string; crest?: string };
-  score?: { fullTime?: { home: number | null; away: number | null } };
+  score?: {
+    fullTime?: { home: number | null; away: number | null };
+    halfTime?: { home: number | null; away: number | null };
+  };
 }
 
 function mapMatch(m: FdMatch): Match {
@@ -48,6 +51,9 @@ function mapMatch(m: FdMatch): Match {
     },
     score: m.score?.fullTime
       ? { home: m.score.fullTime.home, away: m.score.fullTime.away }
+      : undefined,
+    halfTime: m.score?.halfTime
+      ? { home: m.score.halfTime.home, away: m.score.halfTime.away }
       : undefined,
   };
 }
@@ -110,4 +116,108 @@ function rebaseToToday(m: Match): Match {
   newDate.setUTCDate(now.getUTCDate() + offsetDays);
   newDate.setUTCHours(original.getUTCHours(), original.getUTCMinutes(), 0, 0);
   return { ...m, utcDate: newDate.toISOString() };
+}
+
+/* ─── Competition hub helpers ────────────────────────────────────────── */
+
+import type { CompetitionInfo, Scorer } from "./types";
+
+interface FdCompetition {
+  code: string;
+  name: string;
+  area?: { name: string; flag?: string | null };
+  currentSeason?: { startDate?: string; endDate?: string; currentMatchday?: number | null };
+  lastUpdated?: string;
+}
+
+interface FdScorerRow {
+  player: { id: number; name: string; nationality?: string };
+  team: { id: number; name: string; shortName?: string };
+  goals?: number;
+  assists?: number | null;
+  penalties?: number | null;
+  playedMatches?: number | null;
+}
+
+/** Competition metadata: current season window, current matchday, etc. */
+export async function getCompetition(code: string): Promise<CompetitionInfo | null> {
+  const data = await fdFetch<FdCompetition>(`/competitions/${code}`, 6 * 3600);
+  if (!data) return null;
+  return {
+    code: data.code,
+    name: data.name,
+    area: data.area,
+    currentSeason: data.currentSeason,
+    lastUpdated: data.lastUpdated,
+  };
+}
+
+/** Top scorers for a competition (free tier). */
+export async function getTopScorers(code: string, limit: number = 15): Promise<Scorer[]> {
+  const data = await fdFetch<{ scorers: FdScorerRow[] }>(
+    `/competitions/${code}/scorers?limit=${limit}`,
+    3 * 3600,
+  );
+  if (!data?.scorers) return [];
+  return data.scorers
+    .filter(s => typeof s.goals === "number")
+    .map(s => ({
+      player: { id: s.player.id, name: s.player.name, nationality: s.player.nationality },
+      team: { id: s.team.id, name: s.team.name, shortName: s.team.shortName },
+      goals: s.goals ?? 0,
+      assists: s.assists ?? null,
+      penalties: s.penalties ?? null,
+      playedMatches: s.playedMatches ?? null,
+    }));
+}
+
+/** All matches for a competition, optionally filtered to one matchday or status. */
+export async function getCompetitionMatches(
+  code: string,
+  opts: { matchday?: number; status?: "FINISHED" | "SCHEDULED" | "LIVE"; limit?: number } = {},
+): Promise<Match[]> {
+  const params = new URLSearchParams();
+  if (opts.matchday) params.set("matchday", String(opts.matchday));
+  if (opts.status) params.set("status", opts.status);
+  const qs = params.toString();
+  const data = await fdFetch<{ matches: FdMatch[] }>(
+    `/competitions/${code}/matches${qs ? `?${qs}` : ""}`,
+    900,
+  );
+  if (!data?.matches) return [];
+  let matches = data.matches.map(mapMatch);
+  if (opts.limit) matches = matches.slice(0, opts.limit);
+  return matches;
+}
+
+/** Recent finished + next scheduled matches for a competition, packaged
+ *  for the hub view. One upstream call (the full season) sliced two ways. */
+export async function getCompetitionTimeline(
+  code: string,
+  recentLimit: number = 6,
+  upcomingLimit: number = 6,
+): Promise<{ recent: Match[]; upcoming: Match[]; rounds: number[] }> {
+  const all = await getCompetitionMatches(code);
+  if (all.length === 0) return { recent: [], upcoming: [], rounds: [] };
+
+  const now = Date.now();
+  const recent = all
+    .filter(m => m.status === "FINISHED")
+    .sort((a, b) => b.utcDate.localeCompare(a.utcDate))
+    .slice(0, recentLimit);
+  const upcoming = all
+    .filter(m => m.status !== "FINISHED" && new Date(m.utcDate).getTime() >= now - 6 * 3600 * 1000)
+    .sort((a, b) => a.utcDate.localeCompare(b.utcDate))
+    .slice(0, upcomingLimit);
+  const rounds = Array.from(new Set(all.map(m => m.matchday).filter((n): n is number => typeof n === "number")))
+    .sort((a, b) => a - b);
+  return { recent, upcoming, rounds };
+}
+
+/** Last N meetings between two teams, regardless of competition. */
+export async function getHeadToHead(matchId: number, limit: number = 6): Promise<Match[]> {
+  // Football-Data.org has a dedicated H2H endpoint keyed off a match id.
+  const data = await fdFetch<{ matches: FdMatch[] }>(`/matches/${matchId}/head2head?limit=${limit}`, 6 * 3600);
+  if (!data?.matches) return [];
+  return data.matches.map(mapMatch).filter(m => m.status === "FINISHED");
 }

@@ -1,12 +1,14 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getMatchById } from "@/lib/football-data";
+import { getMatchById, getHeadToHead } from "@/lib/football-data";
 import { getMarketOdds } from "@/lib/odds-api";
 import { predictMatch } from "@/lib/predict-match";
 import ProbabilityBar from "@/components/ProbabilityBar";
 import BookmakerLinks from "@/components/BookmakerLinks";
 import ShareButtons from "@/components/ShareButtons";
+import MatchTimeline from "@/components/MatchTimeline";
+import HeadToHeadSection from "@/components/HeadToHeadSection";
 
 export const revalidate = 1800;
 
@@ -27,7 +29,10 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
   const match = await getMatchById(Number(id));
   if (!match) notFound();
 
-  const market = await getMarketOdds(match.competitionCode, match.home.name, match.away.name).catch(() => null);
+  const [market, h2h] = await Promise.all([
+    getMarketOdds(match.competitionCode, match.home.name, match.away.name).catch(() => null),
+    getHeadToHead(match.id, 6).catch(() => [] as typeof match[]),
+  ]);
   const p = predictMatch(match, market ?? undefined);
 
   const date = new Date(match.utcDate);
@@ -64,6 +69,8 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
           {match.away.name}
         </h1>
       </header>
+
+      <MatchTimeline match={match} />
 
       <section className="mt-10">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-bone/40">Outcome probabilities</h2>
@@ -154,6 +161,8 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
       </section>
+
+      <HeadToHeadSection matches={h2h} framingTeamId={match.home.id} />
 
       <section className="mt-10">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-bone/40">Most likely scorelines</h2>

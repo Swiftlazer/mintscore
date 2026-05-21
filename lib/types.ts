@@ -1,4 +1,13 @@
-export type MatchStatus = "SCHEDULED" | "IN_PLAY" | "FINISHED" | "POSTPONED";
+export type MatchStatus =
+  | "SCHEDULED"
+  | "TIMED"        // football-data.org alias for SCHEDULED
+  | "LIVE"
+  | "IN_PLAY"
+  | "PAUSED"       // half-time
+  | "FINISHED"
+  | "POSTPONED"
+  | "SUSPENDED"
+  | "CANCELLED";
 
 export interface Team {
   id: number;
@@ -16,7 +25,27 @@ export interface Match {
   matchday?: number;
   home: Team;
   away: Team;
+  /** Full-time score. Undefined for matches that haven't kicked off. */
   score?: { home: number | null; away: number | null };
+  /** Half-time score if available. Useful for the score timeline. */
+  halfTime?: { home: number | null; away: number | null };
+}
+
+export interface Scorer {
+  player: { id: number; name: string; nationality?: string };
+  team: { id: number; name: string; shortName?: string };
+  goals: number;
+  assists?: number | null;
+  penalties?: number | null;
+  playedMatches?: number | null;
+}
+
+export interface CompetitionInfo {
+  code: string;
+  name: string;
+  area?: { name: string; flag?: string | null };
+  currentSeason?: { startDate?: string; endDate?: string; currentMatchday?: number | null };
+  lastUpdated?: string;
 }
 
 export interface OutcomeProbabilities {

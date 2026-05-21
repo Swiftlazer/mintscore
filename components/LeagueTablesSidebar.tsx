@@ -164,6 +164,13 @@ function SidebarContent({ code, setCode, table, loading, loadError, onRefresh }:
           {updated && <>updated {updated}</>}
           {loading && <span className="text-flag/70"> · loading…</span>}
         </p>
+
+        <a
+          href={`/competitions/${code}`}
+          className="mt-2 inline-block font-mono text-[10px] text-edge/80 underline-offset-2 hover:underline"
+        >
+          Open full competition hub →
+        </a>
       </div>
 
       {/* Body */}
