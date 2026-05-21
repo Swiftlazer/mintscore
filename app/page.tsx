@@ -33,54 +33,58 @@ export default async function HomePage() {
   const accaHistoryByTier = Object.fromEntries(historyEntries) as Record<number, { hitRate: number; sampleSize: number } | null>;
 
   return (
-    <div className="mx-auto max-w-6xl px-5 pt-12 pb-8">
-      <section className="border-b border-hairline pb-12">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-flag">
-          {predictions.length} matches modelled · {valueCount} value spots
-        </p>
-        <h1 className="mt-3 font-display text-4xl font-extrabold leading-[0.95] tracking-tighter md:text-6xl">
-          Football probabilities,<br />
-          <span className="italic text-bone/70">not predictions in disguise.</span>
-        </h1>
-        <p className="mt-5 max-w-2xl text-base text-bone/70 md:text-lg">
-          Every match below shows the model's outcome distribution and expected goals.
-          Where market odds are available, we flag matches with measurable value. We don't
-          tell you what to bet. We show you the maths and let you decide.
-        </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link
-            href="/learn"
-            className="rounded-full border border-flag/40 bg-flag/5 px-5 py-2 text-sm font-semibold text-flag hover:bg-flag/15"
-          >
-            How the model works →
-          </Link>
-          <Link
-            href="/bonuses"
-            className="rounded-full border border-hairline px-5 py-2 text-sm font-semibold text-bone hover:border-bone/40"
-          >
-            Free sign-up bonuses
-          </Link>
-          <Link
-            href="/track-record"
-            className="rounded-full border border-hairline px-5 py-2 text-sm font-semibold text-bone hover:border-bone/40"
-          >
-            Track record →
-          </Link>
-        </div>
-      </section>
+    <div className="pt-12 pb-8">
+      <div className="mx-auto max-w-7xl px-5">
+        <section className="border-b border-hairline pb-12">
+          <p className="font-mono text-[11px] uppercase tracking-widest text-flag">
+            {predictions.length} matches modelled · {valueCount} value spots
+          </p>
+          <h1 className="mt-3 font-display text-4xl font-extrabold leading-[0.95] tracking-tighter md:text-6xl">
+            Football probabilities,<br />
+            <span className="italic text-bone/70">not predictions in disguise.</span>
+          </h1>
+          <p className="mt-5 max-w-2xl text-base text-bone/70 md:text-lg">
+            Every match below shows the model's outcome distribution and expected goals.
+            Where market odds are available, we flag matches with measurable value. We don't
+            tell you what to bet. We show you the maths and let you decide.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link
+              href="/learn"
+              className="rounded-full border border-flag/40 bg-flag/5 px-5 py-2 text-sm font-semibold text-flag hover:bg-flag/15"
+            >
+              How the model works →
+            </Link>
+            <Link
+              href="/bonuses"
+              className="rounded-full border border-hairline px-5 py-2 text-sm font-semibold text-bone hover:border-bone/40"
+            >
+              Free sign-up bonuses
+            </Link>
+            <Link
+              href="/track-record"
+              className="rounded-full border border-hairline px-5 py-2 text-sm font-semibold text-bone hover:border-bone/40"
+            >
+              Track record →
+            </Link>
+          </div>
+        </section>
 
-      {predictions.length === 0 && (
-        <p className="py-20 text-center text-bone/50">
-          No matches in the supported leagues right now. Check back soon.
-        </p>
-      )}
+        {predictions.length === 0 && (
+          <p className="py-20 text-center text-bone/50">
+            No matches in the supported leagues right now. Check back soon.
+          </p>
+        )}
 
-      {predictions.length > 0 && (
-        <HomePageClient
-          predictions={predictions}
-          accaHistoryByTier={accaHistoryByTier}
-        />
-      )}
+        {predictions.length > 0 && (
+          <div className="mt-8">
+            <HomePageClient
+              predictions={predictions}
+              accaHistoryByTier={accaHistoryByTier}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
