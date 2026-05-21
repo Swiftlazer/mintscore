@@ -30,7 +30,9 @@
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.13",
     "tsx": "^4.19.1",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.2",
+    "dotenv": "^16.1.4",
+    "@types/dotenv": "^8.2.0"
   },
   "engines": {
     "node": ">=18.17"
