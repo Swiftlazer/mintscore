@@ -34,6 +34,30 @@ const LEAGUE_NAMES: Record<string, string> = {
   EC: "Europa League",
 };
 
+// Known RapidAPI numeric leagueId -> friendly name map (extend as needed)
+const LEAGUE_NAMES_BY_ID: Record<string, string> = {
+  "931309": "Bundesliga",
+  "924725": "Belgian Pro League",
+  "900837": "Bosnia & Herzegovina",
+  "70": "Swiss Super League",
+  "923422": "Iceland - Úrvalsdeild",
+  "9066": "Tanzania Premier League",
+  "536": "Saudi Pro League",
+};
+
+function getLeagueName(code: string) {
+  // numeric codes from RapidAPI come through as strings like "924725"
+  if (LEAGUE_NAMES[code]) return LEAGUE_NAMES[code];
+  if (LEAGUE_NAMES_BY_ID[code]) return LEAGUE_NAMES_BY_ID[code];
+  return code;
+}
+
+function getLeagueColor(code: string) {
+  if (LEAGUE_COLORS[code]) return LEAGUE_COLORS[code];
+  if (LEAGUE_COLORS[LEAGUE_NAMES_BY_ID[code] ?? ""]) return LEAGUE_COLORS[LEAGUE_NAMES_BY_ID[code]];
+  return "from-gray-600 to-gray-700";
+}
+
 function getStatusBadge(status: string): { text: string; color: string } {
   switch (status) {
     case "IN_PLAY":
@@ -122,8 +146,8 @@ export default function LiveScoresSidebar() {
       <div className="max-h-96 space-y-3 overflow-y-auto rounded-lg border border-hairline bg-midnight/30 p-3">
         {Object.entries(grouped).map(([leagueCode, matches]) => (
           <div key={leagueCode}>
-            <p className="mb-2 font-mono text-[10px] font-bold uppercase text-bone/60">
-              {LEAGUE_NAMES[leagueCode] || leagueCode}
+              <p className="mb-2 font-mono text-[10px] font-bold uppercase text-bone/60">
+              {getLeagueName(leagueCode)}
             </p>
             <div className="space-y-1">
               {matches.slice(0, 5).map(match => {
