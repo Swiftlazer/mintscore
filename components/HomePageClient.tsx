@@ -8,7 +8,6 @@ import { compileAllTargets, compilePerLeague } from "@/lib/accumulator";
 import FavoriteStar from "./FavoriteStar";
 import FilterPills from "./FilterPills";
 import AccumulatorCard from "./AccumulatorCard";
-import LiveScoresSidebar from "./LiveScoresSidebar";
 import type { MatchPrediction } from "@/lib/types";
 
 interface HistoryEntry {
@@ -17,7 +16,10 @@ interface HistoryEntry {
 }
 
 interface Props {
+  /** Full predictions with all model output. The client filters and recomposes
+      accas from these so league + odds filters can affect every section. */
   predictions: MatchPrediction[];
+  /** Historical hit rates per tier, indexed by target odds (10, 100, 1000, 10000). */
   accaHistoryByTier: Record<number, HistoryEntry | null>;
 }
 
@@ -34,13 +36,18 @@ const TIER_LABELS: Record<number, string> = {
   10000: "10k odds",
 };
 
+// Acca pool horizon. Has to be wide enough to cover the next full weekend
+// slate from a midweek visit. Anything tighter than ~72h means a Wed/Thu
+// load with most fixtures on Saturday filters out the entire slate and the
+// acca sections render empty (see scripts/horizon-sweep.ts).
 const HORIZON_MS = 96 * 60 * 60 * 1000;
 
 export default function HomePageClient({ predictions, accaHistoryByTier }: Props) {
   const { isFavorite, toggle, hydrated: favHydrated } = useFavorites();
   const { active: activeLeagues, setActive: setLeagues, hydrated: lFilterHydrated } = useLeagueFilter();
-  const { active: activeTiers, setActive: setTiers, hydrated: tFilterHydrated } = useTierFilter();
+  const { active: activeTiers,   setActive: setTiers,   hydrated: tFilterHydrated } = useTierFilter();
 
+  /* ---------- Available filter options derived from data ---------- */
   const leagueOptions = useMemo(() => {
     const present = new Map<string, string>();
     for (const p of predictions) {
@@ -56,11 +63,14 @@ export default function HomePageClient({ predictions, accaHistoryByTier }: Props
     [],
   );
 
+  /* ---------- Filter the prediction pool by league ---------- */
   const filteredPredictions = useMemo(() => {
     if (!activeLeagues || activeLeagues.size === 0) return predictions;
     return predictions.filter(p => activeLeagues.has(p.match.competitionCode));
   }, [predictions, activeLeagues]);
 
+  /* ---------- Recompose accas from filtered predictions ---------- */
+  // Pool is the next 48 hours of fixtures from the filtered set.
   const accaPool = useMemo(() => {
     const now = Date.now();
     return filteredPredictions.filter(
@@ -71,16 +81,21 @@ export default function HomePageClient({ predictions, accaHistoryByTier }: Props
   const allMainAccas = useMemo(() => compileAllTargets(accaPool), [accaPool]);
   const allPerLeague = useMemo(() => compilePerLeague(accaPool, 10), [accaPool]);
 
+  /* ---------- Apply odds-tier filter to ALL accas ---------- */
+  // Main 4-tier section: filter by selected target odds.
   const visibleMainAccas = useMemo(() => {
     if (!activeTiers || activeTiers.size === 0) return allMainAccas;
     return allMainAccas.filter(({ target }) => activeTiers.has(target));
   }, [allMainAccas, activeTiers]);
 
+  // Per-league section: every per-league acca is at 10 odds, so it's
+  // visible only if 10 is in the selected tiers (or no tier filter).
   const visiblePerLeague = useMemo(() => {
     const tierActive = !activeTiers || activeTiers.size === 0 || activeTiers.has(10);
     return tierActive ? allPerLeague : [];
   }, [allPerLeague, activeTiers]);
 
+  /* ---------- Match list grouping ---------- */
   const { favourited, groupedRest, days } = useMemo(() => {
     const fav: MatchPrediction[] = [];
     const oth: MatchPrediction[] = [];
@@ -110,171 +125,175 @@ export default function HomePageClient({ predictions, accaHistoryByTier }: Props
     predictions.length > 0;
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
-      {/* Main content */}
-      <div>
-        {/* Filter bar */}
-        {(leagueOptions.length > 0 || tierOptions.length > 0) && (
-          <section className="rounded-lg border border-hairline bg-mist/30 p-4">
-            <div className="flex flex-col gap-4">
-              {tierOptions.length > 0 && (
-                <FilterPills<number>
-                  label="Acca odds"
-                  options={tierOptions}
-                  active={activeTiers}
-                  onChange={setTiers}
-                />
-              )}
-              {leagueOptions.length > 0 && (
-                <FilterPills<string>
-                  label="Leagues"
-                  options={leagueOptions}
-                  active={activeLeagues}
-                  onChange={setLeagues}
-                />
-              )}
-            </div>
-            <p className="mt-3 text-[10px] text-bone/40">
-              Filters save to your device, so they stay set next time you visit.
-              Both filters apply globally across every accumulator section and the match list below.
-            </p>
-          </section>
-        )}
+    <>
+      {/* ---------- Filter bar ---------- */}
+      {(leagueOptions.length > 0 || tierOptions.length > 0) && (
+        <section className="mt-12 rounded-lg border border-hairline bg-mist/30 p-4">
+          <div className="flex flex-col gap-4">
+            {tierOptions.length > 0 && (
+              <FilterPills<number>
+                label="Acca odds"
+                options={tierOptions}
+                active={activeTiers}
+                onChange={setTiers}
+              />
+            )}
+            {leagueOptions.length > 0 && (
+              <FilterPills<string>
+                label="Leagues"
+                options={leagueOptions}
+                active={activeLeagues}
+                onChange={setLeagues}
+              />
+            )}
+          </div>
+          <p className="mt-3 text-[10px] text-bone/40">
+            Filters save to your device, so they stay set next time you visit.
+            Both filters apply globally across every accumulator section and the match list below.
+          </p>
+        </section>
+      )}
 
-        {/* Main acca tiers */}
-        {anyMainAcca && (
-          <section className="mt-8">
-            <div className="mb-5 flex items-end justify-between gap-4">
-              <div>
-                <p className="font-mono text-[11px] uppercase tracking-widest text-flag">
-                  Daily aggregator accas
-                </p>
-                <h2 className="mt-1 font-display text-2xl font-bold tracking-tight md:text-3xl">
-                  Built from the model's most-confident picks today
-                </h2>
-              </div>
-              <Link href="/learn#accumulators" className="hidden text-xs text-bone/50 hover:text-bone md:block">
-                Why accas eat your bankroll →
-              </Link>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              {visibleMainAccas.map(({ target, acc }) => {
-                const history = accaHistoryByTier[target] ?? null;
-                return (
-                  <div key={target}>
-                    {acc ? (
-                      <AccumulatorCard
-                        acc={acc}
-                        historicalHitRate={history?.hitRate}
-                        historicalSampleSize={history?.sampleSize}
-                      />
-                    ) : (
-                      <div className="flex h-full min-h-48 flex-col items-center justify-center rounded-lg border border-hairline bg-mist/20 p-5 text-center">
-                        <p className="font-mono text-[10px] uppercase tracking-widest text-bone/40">
-                          {target.toLocaleString()} odds
-                        </p>
-                        <p className="mt-3 text-sm text-bone/60">
-                          Not enough high-confidence picks at the current filters.
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-            <p className="mt-4 max-w-3xl text-xs text-bone/50">
-              Joint probability assumes leg outcomes are independent, which they aren't perfectly.
-              Real variance is higher than the model shows. Accumulators amplify both upside and model error,
-              so keep stakes small. Treat the 1000-odd and 10,000-odd slots as entertainment, not investment.
-            </p>
-          </section>
-        )}
-
-        {/* Per-league accas */}
-        {visiblePerLeague.length > 0 && (
-          <section className="mt-12">
-            <div className="mb-5">
+      {/* ---------- Main acca tiers ---------- */}
+      {filtersHydrated && !anyMainAcca && accaPool.length === 0 && (
+        <section className="mt-8 rounded-lg border border-hairline bg-mist/30 p-6 text-center">
+          <p className="font-mono text-[11px] uppercase tracking-widest text-flag">
+            Daily aggregator accas
+          </p>
+          <p className="mt-3 text-sm text-bone/70">
+            No fixtures inside the acca window right now. Selections refresh
+            automatically once the weekend slate is closer.
+          </p>
+        </section>
+      )}
+      {anyMainAcca && (
+        <section className="mt-8">
+          <div className="mb-5 flex items-end justify-between gap-4">
+            <div>
               <p className="font-mono text-[11px] uppercase tracking-widest text-flag">
-                Best per league
+                Daily aggregator accas
               </p>
               <h2 className="mt-1 font-display text-2xl font-bold tracking-tight md:text-3xl">
-                Safest 10-odds acca for each league
+                Built from the model's most-confident picks today
               </h2>
-              <p className="mt-2 max-w-3xl text-sm text-bone/60">
-                Same algorithm but built only from a single competition's fixtures,
-                useful if you prefer to bet within one league.
-              </p>
             </div>
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {visiblePerLeague.map(({ competitionCode, competitionName, acc }) => (
-                <div key={competitionCode}>
-                  <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-bone/50">
-                    {competitionName}
-                  </p>
-                  <AccumulatorCard acc={acc} />
+            <Link href="/learn#accumulators" className="hidden text-xs text-bone/50 hover:text-bone md:block">
+              Why accas eat your bankroll →
+            </Link>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {visibleMainAccas.map(({ target, acc }) => {
+              const history = accaHistoryByTier[target] ?? null;
+              return (
+                <div key={target}>
+                  {acc ? (
+                    <AccumulatorCard
+                      acc={acc}
+                      historicalHitRate={history?.hitRate}
+                      historicalSampleSize={history?.sampleSize}
+                    />
+                  ) : (
+                    <div className="flex h-full min-h-48 flex-col items-center justify-center rounded-lg border border-hairline bg-mist/20 p-5 text-center">
+                      <p className="font-mono text-[10px] uppercase tracking-widest text-bone/40">
+                        {target.toLocaleString()} odds
+                      </p>
+                      <p className="mt-3 text-sm text-bone/60">
+                        Not enough high-confidence picks at the current filters.
+                      </p>
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
+              );
+            })}
+          </div>
+          <p className="mt-4 max-w-3xl text-xs text-bone/50">
+            Joint probability assumes leg outcomes are independent, which they aren't perfectly.
+            Real variance is higher than the model shows. Accumulators amplify both upside and model error,
+            so keep stakes small. Treat the 1000-odd and 10,000-odd slots as entertainment, not investment.
+          </p>
+        </section>
+      )}
 
-        {/* Match list */}
-        {favourited.length > 0 && (
-          <section className="mt-12">
-            <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold tracking-tight text-flag">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
-              Your teams ({favourited.length})
+      {/* ---------- Per-league accas ---------- */}
+      {visiblePerLeague.length > 0 && (
+        <section className="mt-12">
+          <div className="mb-5">
+            <p className="font-mono text-[11px] uppercase tracking-widest text-flag">
+              Best per league
+            </p>
+            <h2 className="mt-1 font-display text-2xl font-bold tracking-tight md:text-3xl">
+              Safest 10-odds acca for each league
+            </h2>
+            <p className="mt-2 max-w-3xl text-sm text-bone/60">
+              Same algorithm but built only from a single competition's fixtures,
+              useful if you prefer to bet within one league.
+            </p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {visiblePerLeague.map(({ competitionCode, competitionName, acc }) => (
+              <div key={competitionCode}>
+                <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-bone/50">
+                  {competitionName}
+                </p>
+                <AccumulatorCard acc={acc} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ---------- Match list ---------- */}
+      {favourited.length > 0 && (
+        <section className="mt-12">
+          <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold tracking-tight text-flag">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+            Your teams ({favourited.length})
+          </h2>
+          <div className="grid gap-3 md:grid-cols-2">
+            {favourited.map(p => (
+              <MatchRow key={p.match.id} p={p} isFavorite={isFavorite} toggle={toggle} highlight />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {days.map(day => {
+        const dayItems = groupedRest[day] ?? [];
+        if (dayItems.length === 0) return null;
+        return (
+          <section key={day} className="mt-12">
+            <h2 className="mb-4 font-display text-xl font-bold tracking-tight text-bone">
+              {new Date(day).toLocaleDateString([], { weekday: "long", day: "numeric", month: "long" })}
             </h2>
             <div className="grid gap-3 md:grid-cols-2">
-              {favourited.map(p => (
-                <MatchRow key={p.match.id} p={p} isFavorite={isFavorite} toggle={toggle} highlight />
+              {dayItems.map(p => (
+                <MatchRow key={p.match.id} p={p} isFavorite={isFavorite} toggle={toggle} />
               ))}
             </div>
           </section>
-        )}
+        );
+      })}
 
-        {days.map(day => {
-          const dayItems = groupedRest[day] ?? [];
-          if (dayItems.length === 0) return null;
-          return (
-            <section key={day} className="mt-12">
-              <h2 className="mb-4 font-display text-xl font-bold tracking-tight text-bone">
-                {new Date(day).toLocaleDateString([], { weekday: "long", day: "numeric", month: "long" })}
-              </h2>
-              <div className="grid gap-3 md:grid-cols-2">
-                {dayItems.map(p => (
-                  <MatchRow key={p.match.id} p={p} isFavorite={isFavorite} toggle={toggle} />
-                ))}
-              </div>
-            </section>
-          );
-        })}
-
-        {noResultsAfterFilter && (
-          <section className="mt-12 rounded-lg border border-hairline bg-mist/40 p-6 text-center">
-            <p className="font-display text-xl font-bold tracking-tight">No matches at these filters.</p>
-            <p className="mt-2 text-sm text-bone/60">
-              Try clearing one of the filters above to see more.
-            </p>
-          </section>
-        )}
-
-        {favHydrated && favourited.length === 0 && filteredPredictions.length > 0 && (
-          <p className="mt-12 max-w-3xl text-xs text-bone/50">
-            Tip: tap the ☆ next to a team's name to follow them. Their matches will pin to the top
-            of this page across visits, saved locally on your device, no account needed.
+      {noResultsAfterFilter && (
+        <section className="mt-12 rounded-lg border border-hairline bg-mist/40 p-6 text-center">
+          <p className="font-display text-xl font-bold tracking-tight">No matches at these filters.</p>
+          <p className="mt-2 text-sm text-bone/60">
+            Try clearing one of the filters above to see more.
           </p>
-        )}
-      </div>
+        </section>
+      )}
 
-      {/* Sidebar - hide on mobile/tablet */}
-      <div className="hidden lg:block lg:sticky lg:top-12 lg:h-fit">
-        <LiveScoresSidebar />
-      </div>
-    </div>
+      {favHydrated && favourited.length === 0 && filteredPredictions.length > 0 && (
+        <p className="mt-12 max-w-3xl text-xs text-bone/50">
+          Tip: tap the ☆ next to a team's name to follow them. Their matches will pin to the top
+          of this page across visits, saved locally on your device, no account needed.
+        </p>
+      )}
+    </>
   );
 }
 
+/* ---------- internal: a single match row ---------- */
 function MatchRow({
   p,
   isFavorite,

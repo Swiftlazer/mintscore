@@ -7,3 +7,10 @@ out
 .DS_Store
 *.log
 .vercel
+
+.vercel
+.env*.local
+.env.local
+
+# Local backups from patch application
+*.OLD-bet-converter

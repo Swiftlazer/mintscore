@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import LiveScoreSidebar from "@/components/LiveScoreSidebar";
+import LeagueTablesSidebar from "@/components/LeagueTablesSidebar";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://mintscore.app"),
@@ -39,8 +41,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <Header />
-        <main className="min-h-screen">{children}</main>
+        {/* On xl+ screens, reserve a 280px gutter on each side so the two
+            fixed sidebars don't overlap centred page content. Below xl,
+            both sidebars collapse into floating-button + drawer pairs
+            (livescores bottom-left, tables bottom-right) and the main
+            content uses the full viewport width. */}
+        <main className="min-h-screen xl:px-[280px]">{children}</main>
         <Footer />
+        <LiveScoreSidebar />
+        <LeagueTablesSidebar />
       </body>
     </html>
   );

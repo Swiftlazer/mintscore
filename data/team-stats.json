@@ -1,119 +1,1490 @@
 {
   "PL": {
     "competitionCode": "PL",
-    "homeGoalAvg": 1.55,
-    "awayGoalAvg": 1.25,
-    "updated": "2025-09-01",
+    "homeGoalAvg": 1.5324324324324323,
+    "awayGoalAvg": 1.227027027027027,
     "teams": {
-      "Manchester City FC":    { "teamName": "Manchester City FC",    "homeAttack": 1.65, "homeDefence": 0.62, "awayAttack": 1.55, "awayDefence": 0.70, "matchesPlayed": 38 },
-      "Arsenal FC":            { "teamName": "Arsenal FC",            "homeAttack": 1.55, "homeDefence": 0.65, "awayAttack": 1.40, "awayDefence": 0.75, "matchesPlayed": 38 },
-      "Liverpool FC":          { "teamName": "Liverpool FC",          "homeAttack": 1.60, "homeDefence": 0.70, "awayAttack": 1.45, "awayDefence": 0.85, "matchesPlayed": 38 },
-      "Chelsea FC":            { "teamName": "Chelsea FC",            "homeAttack": 1.30, "homeDefence": 0.85, "awayAttack": 1.20, "awayDefence": 0.95, "matchesPlayed": 38 },
-      "Tottenham Hotspur FC":  { "teamName": "Tottenham Hotspur FC",  "homeAttack": 1.40, "homeDefence": 0.95, "awayAttack": 1.25, "awayDefence": 1.05, "matchesPlayed": 38 },
-      "Manchester United FC":  { "teamName": "Manchester United FC",  "homeAttack": 1.20, "homeDefence": 0.95, "awayAttack": 1.05, "awayDefence": 1.10, "matchesPlayed": 38 },
-      "Newcastle United FC":   { "teamName": "Newcastle United FC",   "homeAttack": 1.30, "homeDefence": 0.85, "awayAttack": 1.15, "awayDefence": 1.00, "matchesPlayed": 38 },
-      "Aston Villa FC":        { "teamName": "Aston Villa FC",        "homeAttack": 1.35, "homeDefence": 0.90, "awayAttack": 1.10, "awayDefence": 1.05, "matchesPlayed": 38 },
-      "Brighton & Hove Albion FC": { "teamName": "Brighton & Hove Albion FC", "homeAttack": 1.15, "homeDefence": 1.00, "awayAttack": 1.05, "awayDefence": 1.05, "matchesPlayed": 38 },
-      "West Ham United FC":    { "teamName": "West Ham United FC",    "homeAttack": 1.10, "homeDefence": 1.05, "awayAttack": 0.95, "awayDefence": 1.15, "matchesPlayed": 38 },
-      "Crystal Palace FC":     { "teamName": "Crystal Palace FC",     "homeAttack": 1.05, "homeDefence": 1.00, "awayAttack": 0.90, "awayDefence": 1.10, "matchesPlayed": 38 },
-      "Brentford FC":          { "teamName": "Brentford FC",          "homeAttack": 1.10, "homeDefence": 1.05, "awayAttack": 0.95, "awayDefence": 1.15, "matchesPlayed": 38 },
-      "Fulham FC":             { "teamName": "Fulham FC",             "homeAttack": 1.05, "homeDefence": 1.05, "awayAttack": 0.90, "awayDefence": 1.10, "matchesPlayed": 38 },
-      "Wolverhampton Wanderers FC": { "teamName": "Wolverhampton Wanderers FC", "homeAttack": 0.95, "homeDefence": 1.10, "awayAttack": 0.85, "awayDefence": 1.20, "matchesPlayed": 38 },
-      "Nottingham Forest FC":  { "teamName": "Nottingham Forest FC",  "homeAttack": 1.00, "homeDefence": 1.10, "awayAttack": 0.85, "awayDefence": 1.20, "matchesPlayed": 38 },
-      "Everton FC":            { "teamName": "Everton FC",            "homeAttack": 0.90, "homeDefence": 1.00, "awayAttack": 0.80, "awayDefence": 1.15, "matchesPlayed": 38 },
-      "AFC Bournemouth":       { "teamName": "AFC Bournemouth",       "homeAttack": 1.05, "homeDefence": 1.10, "awayAttack": 0.90, "awayDefence": 1.20, "matchesPlayed": 38 },
-      "Leicester City FC":     { "teamName": "Leicester City FC",     "homeAttack": 0.95, "homeDefence": 1.20, "awayAttack": 0.80, "awayDefence": 1.25, "matchesPlayed": 38 },
-      "Ipswich Town FC":       { "teamName": "Ipswich Town FC",       "homeAttack": 0.85, "homeDefence": 1.30, "awayAttack": 0.75, "awayDefence": 1.40, "matchesPlayed": 38 },
-      "Southampton FC":        { "teamName": "Southampton FC",        "homeAttack": 0.80, "homeDefence": 1.35, "awayAttack": 0.70, "awayDefence": 1.45, "matchesPlayed": 38 }
-    }
+      "Liverpool FC": {
+        "teamName": "Liverpool FC",
+        "homeAttack": 1.1963550852439742,
+        "homeDefence": 0.8602545276554088,
+        "awayAttack": 1.2439137491305357,
+        "awayDefence": 1.1333890281258703,
+        "matchesPlayed": 37
+      },
+      "AFC Bournemouth": {
+        "teamName": "AFC Bournemouth",
+        "homeAttack": 0.9960085398681892,
+        "homeDefence": 0.8578715511245073,
+        "awayAttack": 1.26774351443955,
+        "awayDefence": 1.1963550852439742,
+        "matchesPlayed": 37
+      },
+      "Aston Villa FC": {
+        "teamName": "Aston Villa FC",
+        "homeAttack": 1.0990439060614499,
+        "homeDefence": 0.9436587062369581,
+        "awayAttack": 0.9960841899167892,
+        "awayDefence": 0.9425827944346463,
+        "matchesPlayed": 37
+      },
+      "Newcastle United FC": {
+        "teamName": "Newcastle United FC",
+        "homeAttack": 1.236424394319131,
+        "homeDefence": 1.286807326686761,
+        "awayAttack": 0.7697014194811552,
+        "awayDefence": 0.8338232412306487,
+        "matchesPlayed": 37
+      },
+      "Brighton & Hove Albion FC": {
+        "teamName": "Brighton & Hove Albion FC",
+        "homeAttack": 1.0875955320399766,
+        "homeDefence": 0.7697014194811552,
+        "awayAttack": 0.9436587062369581,
+        "awayDefence": 0.8929731736749281,
+        "matchesPlayed": 37
+      },
+      "Fulham FC": {
+        "teamName": "Fulham FC",
+        "homeAttack": 1.0150891632373116,
+        "homeDefence": 0.9055310817425356,
+        "awayAttack": 0.7291908184558312,
+        "awayDefence": 1.0646987839970297,
+        "matchesPlayed": 37
+      },
+      "Sunderland AFC": {
+        "teamName": "Sunderland AFC",
+        "homeAttack": 0.8338232412306487,
+        "homeDefence": 0.8602545276554088,
+        "awayAttack": 0.7291908184558312,
+        "awayDefence": 0.9616634178037687,
+        "matchesPlayed": 37
+      },
+      "West Ham United FC": {
+        "teamName": "West Ham United FC",
+        "homeAttack": 0.8700764256319812,
+        "homeDefence": 1.3582966226138034,
+        "awayAttack": 0.814977973568282,
+        "awayDefence": 1.202079272254711,
+        "matchesPlayed": 37
+      },
+      "Tottenham Hotspur FC": {
+        "teamName": "Tottenham Hotspur FC",
+        "homeAttack": 0.7613168724279836,
+        "homeDefence": 1.4035731767009303,
+        "awayAttack": 1.1152330164618596,
+        "awayDefence": 0.8929731736749281,
+        "matchesPlayed": 37
+      },
+      "Burnley FC": {
+        "teamName": "Burnley FC",
+        "homeAttack": 0.6163041348226533,
+        "homeDefence": 1.26774351443955,
+        "awayAttack": 0.8578715511245073,
+        "awayDefence": 1.5798756149633344,
+        "matchesPlayed": 37
+      },
+      "Wolverhampton Wanderers FC": {
+        "teamName": "Wolverhampton Wanderers FC",
+        "homeAttack": 0.652557319223986,
+        "homeDefence": 1.4583816369116624,
+        "awayAttack": 0.3169358786098875,
+        "awayDefence": 1.1963550852439742,
+        "matchesPlayed": 37
+      },
+      "Manchester City FC": {
+        "teamName": "Manchester City FC",
+        "homeAttack": 1.5951401136586325,
+        "homeDefence": 0.5433186490455213,
+        "awayAttack": 1.3725944817992117,
+        "awayDefence": 0.7212475633528266,
+        "matchesPlayed": 37
+      },
+      "Chelsea FC": {
+        "teamName": "Chelsea FC",
+        "homeAttack": 0.8929731736749281,
+        "homeDefence": 1.0723394389056342,
+        "awayAttack": 1.4035731767009303,
+        "awayDefence": 0.9063296100333138,
+        "matchesPlayed": 37
+      },
+      "Crystal Palace FC": {
+        "teamName": "Crystal Palace FC",
+        "homeAttack": 0.652557319223986,
+        "homeDefence": 0.9508076358296624,
+        "awayAttack": 0.9436587062369581,
+        "awayDefence": 0.9616634178037687,
+        "matchesPlayed": 37
+      },
+      "Nottingham Forest FC": {
+        "teamName": "Nottingham Forest FC",
+        "homeAttack": 0.6888105036253185,
+        "homeDefence": 0.9960841899167892,
+        "awayAttack": 1.2010201715743103,
+        "awayDefence": 0.9616634178037687,
+        "matchesPlayed": 37
+      },
+      "Brentford FC": {
+        "teamName": "Brentford FC",
+        "homeAttack": 1.1333890281258703,
+        "homeDefence": 0.9007651286807328,
+        "awayAttack": 0.9508076358296624,
+        "awayDefence": 1.0875955320399766,
+        "matchesPlayed": 37
+      },
+      "Manchester United FC": {
+        "teamName": "Manchester United FC",
+        "homeAttack": 1.3394597605123924,
+        "homeDefence": 1.0294458613494089,
+        "awayAttack": 1.222466960352423,
+        "awayDefence": 0.9425827944346463,
+        "matchesPlayed": 37
+      },
+      "Arsenal FC": {
+        "teamName": "Arsenal FC",
+        "homeAttack": 1.4081500046412327,
+        "homeDefence": 0.47182935311847907,
+        "awayAttack": 1.26774351443955,
+        "awayDefence": 0.5437977660199883,
+        "matchesPlayed": 37
+      },
+      "Leeds United FC": {
+        "teamName": "Leeds United FC",
+        "homeAttack": 0.9960085398681892,
+        "homeDefence": 0.9007651286807328,
+        "awayAttack": 0.9055310817425356,
+        "awayDefence": 1.1601019008426416,
+        "matchesPlayed": 37
+      },
+      "Everton FC": {
+        "teamName": "Everton FC",
+        "homeAttack": 0.8929731736749281,
+        "homeDefence": 1.158126594018085,
+        "awayAttack": 0.9508076358296624,
+        "awayDefence": 0.7975700568293163,
+        "matchesPlayed": 37
+      }
+    },
+    "updated": "2026-05-21"
   },
   "PD": {
     "competitionCode": "PD",
-    "homeGoalAvg": 1.45,
-    "awayGoalAvg": 1.10,
-    "updated": "2025-09-01",
+    "homeGoalAvg": 1.5567567567567568,
+    "awayGoalAvg": 1.127027027027027,
     "teams": {
-      "Real Madrid CF":        { "teamName": "Real Madrid CF",        "homeAttack": 1.65, "homeDefence": 0.60, "awayAttack": 1.50, "awayDefence": 0.70, "matchesPlayed": 38 },
-      "FC Barcelona":          { "teamName": "FC Barcelona",          "homeAttack": 1.70, "homeDefence": 0.70, "awayAttack": 1.50, "awayDefence": 0.80, "matchesPlayed": 38 },
-      "Club Atlético de Madrid": { "teamName": "Club Atlético de Madrid", "homeAttack": 1.40, "homeDefence": 0.65, "awayAttack": 1.20, "awayDefence": 0.80, "matchesPlayed": 38 },
-      "Athletic Club":         { "teamName": "Athletic Club",         "homeAttack": 1.30, "homeDefence": 0.80, "awayAttack": 1.10, "awayDefence": 0.95, "matchesPlayed": 38 },
-      "Real Sociedad de Fútbol": { "teamName": "Real Sociedad de Fútbol", "homeAttack": 1.15, "homeDefence": 0.90, "awayAttack": 1.00, "awayDefence": 1.00, "matchesPlayed": 38 },
-      "Villarreal CF":         { "teamName": "Villarreal CF",         "homeAttack": 1.20, "homeDefence": 1.00, "awayAttack": 1.05, "awayDefence": 1.10, "matchesPlayed": 38 },
-      "Real Betis Balompié":   { "teamName": "Real Betis Balompié",   "homeAttack": 1.10, "homeDefence": 0.95, "awayAttack": 0.95, "awayDefence": 1.05, "matchesPlayed": 38 },
-      "Sevilla FC":            { "teamName": "Sevilla FC",            "homeAttack": 1.00, "homeDefence": 1.00, "awayAttack": 0.85, "awayDefence": 1.15, "matchesPlayed": 38 },
-      "Valencia CF":           { "teamName": "Valencia CF",           "homeAttack": 0.95, "homeDefence": 1.10, "awayAttack": 0.80, "awayDefence": 1.20, "matchesPlayed": 38 },
-      "Getafe CF":             { "teamName": "Getafe CF",             "homeAttack": 0.85, "homeDefence": 0.95, "awayAttack": 0.75, "awayDefence": 1.10, "matchesPlayed": 38 }
-    }
+      "Girona FC": {
+        "teamName": "Girona FC",
+        "homeAttack": 0.7137345679012346,
+        "homeDefence": 1.2816413535837996,
+        "awayAttack": 0.8405906853464596,
+        "awayDefence": 0.9466374269005847,
+        "matchesPlayed": 37
+      },
+      "Rayo Vallecano de Madrid": {
+        "teamName": "Rayo Vallecano de Madrid",
+        "homeAttack": 0.8114035087719297,
+        "homeDefence": 0.7004922377887164,
+        "awayAttack": 0.7394084732214229,
+        "awayDefence": 0.9992283950617283,
+        "matchesPlayed": 37
+      },
+      "Villarreal CF": {
+        "teamName": "Villarreal CF",
+        "homeAttack": 1.5345293209876543,
+        "homeDefence": 0.8872901678657074,
+        "awayAttack": 1.120787580461946,
+        "awayDefence": 0.912828947368421,
+        "matchesPlayed": 37
+      },
+      "Real Oviedo": {
+        "teamName": "Real Oviedo",
+        "homeAttack": 0.3042763157894737,
+        "homeDefence": 0.8405906853464596,
+        "awayAttack": 0.8379962696509459,
+        "awayDefence": 1.3917824074074072,
+        "matchesPlayed": 37
+      },
+      "RCD Mallorca": {
+        "teamName": "RCD Mallorca",
+        "homeAttack": 0.9992283950617283,
+        "homeDefence": 1.035171862509992,
+        "awayAttack": 0.7471917203079641,
+        "awayDefence": 1.2171052631578947,
+        "matchesPlayed": 37
+      },
+      "FC Barcelona": {
+        "teamName": "FC Barcelona",
+        "homeAttack": 1.9270833333333333,
+        "homeDefence": 0.46699482519247754,
+        "awayAttack": 1.8238742339461762,
+        "awayDefence": 0.8207947530864197,
+        "matchesPlayed": 37
+      },
+      "Deportivo Alavés": {
+        "teamName": "Deportivo Alavés",
+        "homeAttack": 0.8564814814814814,
+        "homeDefence": 1.133759658939515,
+        "awayAttack": 0.8872901678657074,
+        "awayDefence": 1.0480628654970758,
+        "matchesPlayed": 37
+      },
+      "Levante UD": {
+        "teamName": "Levante UD",
+        "homeAttack": 0.8790204678362573,
+        "homeDefence": 1.3075855105389371,
+        "awayAttack": 0.9858779642952304,
+        "awayDefence": 1.1062885802469136,
+        "matchesPlayed": 37
+      },
+      "Valencia CF": {
+        "teamName": "Valencia CF",
+        "homeAttack": 0.8564814814814814,
+        "homeDefence": 1.0844657607247536,
+        "awayAttack": 0.8872901678657074,
+        "awayDefence": 1.0818713450292397,
+        "matchesPlayed": 37
+      },
+      "Real Sociedad de Fútbol": {
+        "teamName": "Real Sociedad de Fútbol",
+        "homeAttack": 1.2509137426900585,
+        "homeDefence": 1.4476839580966805,
+        "awayAttack": 1.035171862509992,
+        "awayDefence": 1.0349151234567902,
+        "matchesPlayed": 37
+      },
+      "RC Celta de Vigo": {
+        "teamName": "RC Celta de Vigo",
+        "homeAttack": 0.9992283950617283,
+        "homeDefence": 1.3802291500133226,
+        "awayAttack": 1.120787580461946,
+        "awayDefence": 0.6761695906432748,
+        "matchesPlayed": 37
+      },
+      "Getafe CF": {
+        "teamName": "Getafe CF",
+        "homeAttack": 0.6066743827160493,
+        "homeDefence": 0.7887023714361843,
+        "awayAttack": 0.6537927552694686,
+        "awayDefence": 0.7437865497076023,
+        "matchesPlayed": 37
+      },
+      "Athletic Club": {
+        "teamName": "Athletic Club",
+        "homeAttack": 0.7437865497076023,
+        "homeDefence": 0.980689132904203,
+        "awayAttack": 0.936584066080469,
+        "awayDefence": 1.177662037037037,
+        "matchesPlayed": 37
+      },
+      "Sevilla FC": {
+        "teamName": "Sevilla FC",
+        "homeAttack": 0.8114035087719297,
+        "homeDefence": 1.167487062981194,
+        "awayAttack": 1.0844657607247536,
+        "awayDefence": 1.2133487654320987,
+        "matchesPlayed": 37
+      },
+      "RCD Espanyol de Barcelona": {
+        "teamName": "RCD Espanyol de Barcelona",
+        "homeAttack": 0.7137345679012346,
+        "homeDefence": 1.133759658939515,
+        "awayAttack": 1.0273886154234506,
+        "awayDefence": 1.0480628654970758,
+        "matchesPlayed": 37
+      },
+      "Club Atlético de Madrid": {
+        "teamName": "Club Atlético de Madrid",
+        "homeAttack": 1.318530701754386,
+        "homeDefence": 0.7938912028272119,
+        "awayAttack": 1.0844657607247536,
+        "awayDefence": 0.7851080246913581,
+        "matchesPlayed": 37
+      },
+      "Elche CF": {
+        "teamName": "Elche CF",
+        "homeAttack": 1.0142543859649122,
+        "homeDefence": 0.8872901678657074,
+        "awayAttack": 0.8872901678657074,
+        "awayDefence": 1.3204089506172838,
+        "matchesPlayed": 37
+      },
+      "Real Betis Balompié": {
+        "teamName": "Real Betis Balompié",
+        "homeAttack": 1.1419753086419753,
+        "homeDefence": 0.8872901678657074,
+        "awayAttack": 1.167487062981194,
+        "awayDefence": 0.9804459064327485,
+        "matchesPlayed": 37
+      },
+      "Real Madrid CF": {
+        "teamName": "Real Madrid CF",
+        "homeAttack": 1.4631558641975306,
+        "homeDefence": 0.6901145750066613,
+        "awayAttack": 1.4943834406159282,
+        "awayDefence": 0.642361111111111,
+        "matchesPlayed": 37
+      },
+      "CA Osasuna": {
+        "teamName": "CA Osasuna",
+        "homeAttack": 1.0480628654970758,
+        "homeDefence": 1.120787580461946,
+        "awayAttack": 0.6408206767918998,
+        "awayDefence": 0.8921682098765431,
+        "matchesPlayed": 37
+      }
+    },
+    "updated": "2026-05-21"
   },
   "BL1": {
     "competitionCode": "BL1",
-    "homeGoalAvg": 1.65,
-    "awayGoalAvg": 1.40,
-    "updated": "2025-09-01",
+    "homeGoalAvg": 1.7777777777777777,
+    "awayGoalAvg": 1.457516339869281,
     "teams": {
-      "FC Bayern München":     { "teamName": "FC Bayern München",     "homeAttack": 1.85, "homeDefence": 0.60, "awayAttack": 1.65, "awayDefence": 0.75, "matchesPlayed": 34 },
-      "Bayer 04 Leverkusen":   { "teamName": "Bayer 04 Leverkusen",   "homeAttack": 1.55, "homeDefence": 0.75, "awayAttack": 1.40, "awayDefence": 0.85, "matchesPlayed": 34 },
-      "Borussia Dortmund":     { "teamName": "Borussia Dortmund",     "homeAttack": 1.45, "homeDefence": 0.85, "awayAttack": 1.30, "awayDefence": 0.95, "matchesPlayed": 34 },
-      "RB Leipzig":            { "teamName": "RB Leipzig",            "homeAttack": 1.40, "homeDefence": 0.80, "awayAttack": 1.25, "awayDefence": 0.95, "matchesPlayed": 34 },
-      "Eintracht Frankfurt":   { "teamName": "Eintracht Frankfurt",   "homeAttack": 1.25, "homeDefence": 0.95, "awayAttack": 1.10, "awayDefence": 1.05, "matchesPlayed": 34 },
-      "VfB Stuttgart":         { "teamName": "VfB Stuttgart",         "homeAttack": 1.30, "homeDefence": 1.00, "awayAttack": 1.15, "awayDefence": 1.10, "matchesPlayed": 34 }
-    }
+      "FC Bayern München": {
+        "teamName": "FC Bayern München",
+        "homeAttack": 2.25,
+        "homeDefence": 0.766816143497758,
+        "awayAttack": 2.179372197309417,
+        "awayDefence": 0.5625,
+        "matchesPlayed": 34
+      },
+      "RB Leipzig": {
+        "teamName": "RB Leipzig",
+        "homeAttack": 1.323529411764706,
+        "homeDefence": 0.8071748878923768,
+        "awayAttack": 1.0493273542600896,
+        "awayDefence": 0.8933823529411765,
+        "matchesPlayed": 34
+      },
+      "Eintracht Frankfurt": {
+        "teamName": "Eintracht Frankfurt",
+        "homeAttack": 0.9595588235294118,
+        "homeDefence": 1.0896860986547086,
+        "awayAttack": 1.2914798206278026,
+        "awayDefence": 1.2573529411764708,
+        "matchesPlayed": 34
+      },
+      "SV Werder Bremen": {
+        "teamName": "SV Werder Bremen",
+        "homeAttack": 0.6286764705882354,
+        "homeDefence": 1.251121076233184,
+        "awayAttack": 0.7264573991031391,
+        "awayDefence": 0.9595588235294118,
+        "matchesPlayed": 34
+      },
+      "Sport-Club Freiburg": {
+        "teamName": "Sport-Club Freiburg",
+        "homeAttack": 1.0919117647058825,
+        "homeDefence": 0.8878923766816145,
+        "awayAttack": 0.7264573991031391,
+        "awayDefence": 1.1580882352941175,
+        "matchesPlayed": 34
+      },
+      "FC Augsburg": {
+        "teamName": "FC Augsburg",
+        "homeAttack": 0.8272058823529412,
+        "homeDefence": 1.1300448430493273,
+        "awayAttack": 0.8071748878923768,
+        "awayDefence": 1.0919117647058825,
+        "matchesPlayed": 34
+      },
+      "1. FC Heidenheim 1846": {
+        "teamName": "1. FC Heidenheim 1846",
+        "homeAttack": 0.761029411764706,
+        "homeDefence": 1.4932735426008967,
+        "awayAttack": 0.7264573991031391,
+        "awayDefence": 1.1580882352941175,
+        "matchesPlayed": 34
+      },
+      "VfL Wolfsburg": {
+        "teamName": "VfL Wolfsburg",
+        "homeAttack": 0.6948529411764707,
+        "homeDefence": 1.2914798206278026,
+        "awayAttack": 0.9686098654708521,
+        "awayDefence": 1.2242647058823528,
+        "matchesPlayed": 34
+      },
+      "Bayer 04 Leverkusen": {
+        "teamName": "Bayer 04 Leverkusen",
+        "homeAttack": 1.2573529411764708,
+        "homeDefence": 0.766816143497758,
+        "awayAttack": 1.210762331838565,
+        "awayDefence": 0.9264705882352942,
+        "matchesPlayed": 34
+      },
+      "TSG 1899 Hoffenheim": {
+        "teamName": "TSG 1899 Hoffenheim",
+        "homeAttack": 1.1580882352941175,
+        "homeDefence": 0.8475336322869956,
+        "awayAttack": 1.210762331838565,
+        "awayDefence": 1.0257352941176472,
+        "matchesPlayed": 34
+      },
+      "1. FC Union Berlin": {
+        "teamName": "1. FC Union Berlin",
+        "homeAttack": 0.8602941176470588,
+        "homeDefence": 1.0493273542600896,
+        "awayAttack": 0.7264573991031391,
+        "awayDefence": 1.0588235294117647,
+        "matchesPlayed": 34
+      },
+      "VfB Stuttgart": {
+        "teamName": "VfB Stuttgart",
+        "homeAttack": 0.9926470588235294,
+        "homeDefence": 0.6457399103139013,
+        "awayAttack": 1.654708520179372,
+        "awayDefence": 1.0919117647058825,
+        "matchesPlayed": 34
+      },
+      "FC St. Pauli 1910": {
+        "teamName": "FC St. Pauli 1910",
+        "homeAttack": 0.5625,
+        "homeDefence": 1.251121076233184,
+        "awayAttack": 0.4843049327354261,
+        "awayDefence": 0.9595588235294118,
+        "matchesPlayed": 34
+      },
+      "Borussia Dortmund": {
+        "teamName": "Borussia Dortmund",
+        "homeAttack": 1.323529411764706,
+        "homeDefence": 0.6457399103139013,
+        "awayAttack": 1.210762331838565,
+        "awayDefence": 0.5955882352941176,
+        "matchesPlayed": 34
+      },
+      "1. FSV Mainz 05": {
+        "teamName": "1. FSV Mainz 05",
+        "homeAttack": 0.6948529411764707,
+        "homeDefence": 1.0089686098654709,
+        "awayAttack": 0.9282511210762333,
+        "awayDefence": 0.9264705882352942,
+        "matchesPlayed": 34
+      },
+      "1. FC Köln": {
+        "teamName": "1. FC Köln",
+        "homeAttack": 0.9926470588235294,
+        "homeDefence": 1.210762331838565,
+        "awayAttack": 0.766816143497758,
+        "awayDefence": 1.0919117647058825,
+        "matchesPlayed": 34
+      },
+      "Borussia Mönchengladbach": {
+        "teamName": "Borussia Mönchengladbach",
+        "homeAttack": 0.7941176470588236,
+        "homeDefence": 0.9686098654708521,
+        "awayAttack": 0.7264573991031391,
+        "awayDefence": 0.9595588235294118,
+        "matchesPlayed": 34
+      },
+      "Hamburger SV": {
+        "teamName": "Hamburger SV",
+        "homeAttack": 0.8272058823529412,
+        "homeDefence": 0.8878923766816145,
+        "awayAttack": 0.6053811659192825,
+        "awayDefence": 1.0588235294117647,
+        "matchesPlayed": 34
+      }
+    },
+    "updated": "2026-05-21"
   },
   "SA": {
     "competitionCode": "SA",
-    "homeGoalAvg": 1.45,
-    "awayGoalAvg": 1.15,
-    "updated": "2025-09-01",
+    "homeGoalAvg": 1.2756756756756757,
+    "awayGoalAvg": 1.1405405405405404,
     "teams": {
-      "FC Internazionale Milano": { "teamName": "FC Internazionale Milano", "homeAttack": 1.55, "homeDefence": 0.55, "awayAttack": 1.40, "awayDefence": 0.70, "matchesPlayed": 38 },
-      "AC Milan":              { "teamName": "AC Milan",              "homeAttack": 1.40, "homeDefence": 0.80, "awayAttack": 1.25, "awayDefence": 0.95, "matchesPlayed": 38 },
-      "Juventus FC":           { "teamName": "Juventus FC",           "homeAttack": 1.30, "homeDefence": 0.65, "awayAttack": 1.10, "awayDefence": 0.80, "matchesPlayed": 38 },
-      "SSC Napoli":            { "teamName": "SSC Napoli",            "homeAttack": 1.40, "homeDefence": 0.85, "awayAttack": 1.20, "awayDefence": 1.00, "matchesPlayed": 38 },
-      "Atalanta BC":           { "teamName": "Atalanta BC",           "homeAttack": 1.55, "homeDefence": 0.90, "awayAttack": 1.35, "awayDefence": 1.00, "matchesPlayed": 38 },
-      "AS Roma":               { "teamName": "AS Roma",               "homeAttack": 1.25, "homeDefence": 0.90, "awayAttack": 1.10, "awayDefence": 1.05, "matchesPlayed": 38 },
-      "SS Lazio":              { "teamName": "SS Lazio",              "homeAttack": 1.20, "homeDefence": 0.95, "awayAttack": 1.05, "awayDefence": 1.10, "matchesPlayed": 38 }
-    }
+      "Genoa CFC": {
+        "teamName": "Genoa CFC",
+        "homeAttack": 0.907671721677074,
+        "homeDefence": 1.1998004489897731,
+        "awayAttack": 0.9254870984728806,
+        "awayDefence": 1.0451977401129942,
+        "matchesPlayed": 37
+      },
+      "US Lecce": {
+        "teamName": "US Lecce",
+        "homeAttack": 0.5225988700564971,
+        "homeDefence": 1.169036334913112,
+        "awayAttack": 0.6921925667248691,
+        "awayDefence": 1.0727029438001783,
+        "matchesPlayed": 37
+      },
+      "US Sassuolo Calcio": {
+        "teamName": "US Sassuolo Calcio",
+        "homeAttack": 1.0314451382694023,
+        "homeDefence": 1.1998004489897731,
+        "awayAttack": 1.0229067930489733,
+        "awayDefence": 1.0016478342749529,
+        "matchesPlayed": 37
+      },
+      "SSC Napoli": {
+        "teamName": "SSC Napoli",
+        "homeAttack": 1.3935969868173257,
+        "homeDefence": 0.8767772511848342,
+        "awayAttack": 1.153654277874782,
+        "awayDefence": 0.7426404995539696,
+        "matchesPlayed": 37
+      },
+      "AC Milan": {
+        "teamName": "AC Milan",
+        "homeAttack": 1.0451977401129942,
+        "homeDefence": 0.9254870984728806,
+        "awayAttack": 1.2920927912197555,
+        "awayDefence": 0.5776092774308652,
+        "matchesPlayed": 37
+      },
+      "US Cremonese": {
+        "teamName": "US Cremonese",
+        "homeAttack": 0.7403483992467043,
+        "homeDefence": 1.2177461822011586,
+        "awayAttack": 0.6460463956098778,
+        "awayDefence": 1.1552185548617304,
+        "matchesPlayed": 37
+      },
+      "AS Roma": {
+        "teamName": "AS Roma",
+        "homeAttack": 1.361507582515611,
+        "homeDefence": 0.4614617111499127,
+        "awayAttack": 1.169036334913112,
+        "awayDefence": 0.91454802259887,
+        "matchesPlayed": 37
+      },
+      "Bologna FC 1909": {
+        "teamName": "Bologna FC 1909",
+        "homeAttack": 0.6967984934086628,
+        "homeDefence": 0.974196945760927,
+        "awayAttack": 1.3843851334497381,
+        "awayDefence": 0.9489295272078501,
+        "matchesPlayed": 37
+      },
+      "Cagliari Calcio": {
+        "teamName": "Cagliari Calcio",
+        "homeAttack": 0.907671721677074,
+        "homeDefence": 1.0613619356447992,
+        "awayAttack": 0.7793575566087415,
+        "awayDefence": 1.2629472693032016,
+        "matchesPlayed": 37
+      },
+      "ACF Fiorentina": {
+        "teamName": "ACF Fiorentina",
+        "homeAttack": 0.8709981167608286,
+        "homeDefence": 0.974196945760927,
+        "awayAttack": 0.9229234222998254,
+        "awayDefence": 1.1964763603925066,
+        "matchesPlayed": 37
+      },
+      "Como 1907": {
+        "teamName": "Como 1907",
+        "homeAttack": 1.444023193577163,
+        "homeDefence": 0.6921925667248691,
+        "awayAttack": 1.2664560294892049,
+        "awayDefence": 0.5661487758945386,
+        "matchesPlayed": 37
+      },
+      "SS Lazio": {
+        "teamName": "SS Lazio",
+        "homeAttack": 1.0887476459510357,
+        "homeDefence": 1.169036334913112,
+        "awayAttack": 0.6460463956098778,
+        "awayDefence": 0.6188670829616414,
+        "matchesPlayed": 37
+      },
+      "Atalanta BC": {
+        "teamName": "Atalanta BC",
+        "homeAttack": 1.0314451382694023,
+        "homeDefence": 0.6921925667248691,
+        "awayAttack": 1.2177461822011586,
+        "awayDefence": 0.8709981167608286,
+        "matchesPlayed": 37
+      },
+      "AC Pisa 1909": {
+        "teamName": "AC Pisa 1909",
+        "homeAttack": 0.3713202497769848,
+        "homeDefence": 1.1998004489897731,
+        "awayAttack": 0.7793575566087415,
+        "awayDefence": 1.8726459510357814,
+        "matchesPlayed": 37
+      },
+      "Juventus FC": {
+        "teamName": "Juventus FC",
+        "homeAttack": 1.444023193577163,
+        "homeDefence": 0.7383387378398604,
+        "awayAttack": 1.169036334913112,
+        "awayDefence": 0.6967984934086628,
+        "matchesPlayed": 37
+      },
+      "Parma Calcio 1913": {
+        "teamName": "Parma Calcio 1913",
+        "homeAttack": 0.6532485875706214,
+        "homeDefence": 1.2177461822011586,
+        "awayAttack": 0.5537540533798953,
+        "awayDefence": 0.866413916146298,
+        "matchesPlayed": 37
+      },
+      "Udinese Calcio": {
+        "teamName": "Udinese Calcio",
+        "homeAttack": 0.7426404995539696,
+        "homeDefence": 0.9690695934148168,
+        "awayAttack": 1.3151658767772514,
+        "awayDefence": 1.1322975517890772,
+        "matchesPlayed": 37
+      },
+      "Hellas Verona FC": {
+        "teamName": "Hellas Verona FC",
+        "homeAttack": 0.5225988700564971,
+        "homeDefence": 1.2664560294892049,
+        "awayAttack": 0.5999002244948866,
+        "awayDefence": 1.361507582515611,
+        "matchesPlayed": 37
+      },
+      "FC Internazionale Milano": {
+        "teamName": "FC Internazionale Milano",
+        "homeAttack": 2.0628902765388046,
+        "homeDefence": 0.7383387378398604,
+        "awayAttack": 1.7535545023696684,
+        "awayDefence": 0.6967984934086628,
+        "matchesPlayed": 37
+      },
+      "Torino FC": {
+        "teamName": "Torino FC",
+        "homeAttack": 1.0887476459510357,
+        "homeDefence": 1.3151658767772514,
+        "awayAttack": 0.7844849089548517,
+        "awayDefence": 1.402765388046387,
+        "matchesPlayed": 37
+      }
+    },
+    "updated": "2026-05-21"
   },
   "FL1": {
     "competitionCode": "FL1",
-    "homeGoalAvg": 1.50,
-    "awayGoalAvg": 1.20,
-    "updated": "2025-09-01",
+    "homeGoalAvg": 1.5868852459016394,
+    "awayGoalAvg": 1.2426229508196722,
     "teams": {
-      "Paris Saint-Germain FC": { "teamName": "Paris Saint-Germain FC", "homeAttack": 1.85, "homeDefence": 0.55, "awayAttack": 1.65, "awayDefence": 0.70, "matchesPlayed": 34 },
-      "AS Monaco FC":          { "teamName": "AS Monaco FC",          "homeAttack": 1.40, "homeDefence": 0.85, "awayAttack": 1.20, "awayDefence": 1.00, "matchesPlayed": 34 },
-      "Olympique de Marseille":{ "teamName": "Olympique de Marseille",  "homeAttack": 1.30, "homeDefence": 0.90, "awayAttack": 1.10, "awayDefence": 1.05, "matchesPlayed": 34 },
-      "Lille OSC":             { "teamName": "Lille OSC",             "homeAttack": 1.25, "homeDefence": 0.85, "awayAttack": 1.10, "awayDefence": 0.95, "matchesPlayed": 34 },
-      "Olympique Lyonnais":    { "teamName": "Olympique Lyonnais",    "homeAttack": 1.20, "homeDefence": 1.00, "awayAttack": 1.05, "awayDefence": 1.10, "matchesPlayed": 34 }
-    }
+      "Stade Rennais FC 1901": {
+        "teamName": "Stade Rennais FC 1901",
+        "homeAttack": 1.1120563928050557,
+        "homeDefence": 0.804749340369393,
+        "awayAttack": 1.3728076982772,
+        "awayDefence": 1.2232620320855614,
+        "matchesPlayed": 34
+      },
+      "Olympique de Marseille": {
+        "teamName": "Olympique de Marseille",
+        "homeAttack": 1.5198104035002429,
+        "homeDefence": 0.9467639298463448,
+        "awayAttack": 1.0414403228309794,
+        "awayDefence": 0.92671366067088,
+        "matchesPlayed": 34
+      },
+      "RC Lens": {
+        "teamName": "RC Lens",
+        "homeAttack": 1.2973991249392318,
+        "homeDefence": 0.6153965544001241,
+        "awayAttack": 1.4674840912618343,
+        "awayDefence": 0.8155080213903744,
+        "matchesPlayed": 34
+      },
+      "Olympique Lyonnais": {
+        "teamName": "Olympique Lyonnais",
+        "homeAttack": 1.1120563928050557,
+        "homeDefence": 0.8520875368617103,
+        "awayAttack": 1.0887785193232966,
+        "awayDefence": 0.8155080213903744,
+        "matchesPlayed": 34
+      },
+      "AS Monaco FC": {
+        "teamName": "AS Monaco FC",
+        "homeAttack": 1.2232620320855614,
+        "homeDefence": 1.0887785193232966,
+        "awayAttack": 1.2781313052925654,
+        "awayDefence": 1.149124939231891,
+        "matchesPlayed": 34
+      },
+      "Le Havre AC": {
+        "teamName": "Le Havre AC",
+        "homeAttack": 0.7413709285367039,
+        "homeDefence": 0.8520875368617103,
+        "awayAttack": 0.5680583579078069,
+        "awayDefence": 0.963782207097715,
+        "matchesPlayed": 34
+      },
+      "OGC Nice": {
+        "teamName": "OGC Nice",
+        "homeAttack": 0.7043023821098687,
+        "homeDefence": 1.2781313052925654,
+        "awayAttack": 0.8520875368617103,
+        "awayDefence": 1.2232620320855614,
+        "matchesPlayed": 34
+      },
+      "Toulouse FC": {
+        "teamName": "Toulouse FC",
+        "homeAttack": 0.92671366067088,
+        "homeDefence": 1.1361167158156138,
+        "awayAttack": 1.1065303430079154,
+        "awayDefence": 0.8664772727272727,
+        "matchesPlayed": 33
+      },
+      "Stade Brestois 29": {
+        "teamName": "Stade Brestois 29",
+        "homeAttack": 1.0379192999513855,
+        "homeDefence": 1.0887785193232966,
+        "awayAttack": 0.7100729473847586,
+        "awayDefence": 1.1861934856587262,
+        "matchesPlayed": 34
+      },
+      "Lille OSC": {
+        "teamName": "Lille OSC",
+        "homeAttack": 0.8896451142440448,
+        "homeDefence": 0.804749340369393,
+        "awayAttack": 1.3254695017848828,
+        "awayDefence": 0.7413709285367039,
+        "matchesPlayed": 34
+      },
+      "Angers SCO": {
+        "teamName": "Angers SCO",
+        "homeAttack": 0.6672338356830335,
+        "homeDefence": 0.9467639298463448,
+        "awayAttack": 0.5207201614154897,
+        "awayDefence": 1.0379192999513855,
+        "matchesPlayed": 34
+      },
+      "Paris FC": {
+        "teamName": "Paris FC",
+        "homeAttack": 1.0379192999513855,
+        "homeDefence": 1.2781313052925654,
+        "awayAttack": 0.8994257333540275,
+        "awayDefence": 0.8525765678172096,
+        "matchesPlayed": 34
+      },
+      "AJ Auxerre": {
+        "teamName": "AJ Auxerre",
+        "homeAttack": 0.6672338356830335,
+        "homeDefence": 0.804749340369393,
+        "awayAttack": 0.7574111438770759,
+        "awayDefence": 1.0008507535245503,
+        "matchesPlayed": 34
+      },
+      "Lorient": {
+        "teamName": "Lorient",
+        "homeAttack": 1.149124939231891,
+        "homeDefence": 1.183454912307931,
+        "awayAttack": 0.804749340369393,
+        "awayDefence": 0.963782207097715,
+        "matchesPlayed": 34
+      },
+      "Metz": {
+        "teamName": "Metz",
+        "homeAttack": 0.5560281964025279,
+        "homeDefence": 1.5148222877541517,
+        "awayAttack": 0.804749340369393,
+        "awayDefence": 1.6310160427807487,
+        "matchesPlayed": 34
+      },
+      "RC Strasbourg Alsace": {
+        "teamName": "RC Strasbourg Alsace",
+        "homeAttack": 1.1120563928050557,
+        "homeDefence": 0.8994257333540275,
+        "awayAttack": 1.3254695017848828,
+        "awayDefence": 1.0379192999513855,
+        "matchesPlayed": 34
+      },
+      "FC Nantes": {
+        "teamName": "FC Nantes",
+        "homeAttack": 0.7089359504132231,
+        "homeDefence": 1.3580145118733509,
+        "awayAttack": 0.5207201614154897,
+        "awayDefence": 0.92671366067088,
+        "matchesPlayed": 33
+      },
+      "Paris Saint-Germain FC": {
+        "teamName": "Paris Saint-Germain FC",
+        "homeAttack": 1.5198104035002429,
+        "homeDefence": 0.5680583579078069,
+        "awayAttack": 1.562160484246469,
+        "awayDefence": 0.6301652892561983,
+        "matchesPlayed": 34
+      }
+    },
+    "updated": "2026-05-21"
   },
   "CL": {
     "competitionCode": "CL",
-    "homeGoalAvg": 1.50,
-    "awayGoalAvg": 1.20,
+    "homeGoalAvg": 1.5,
+    "awayGoalAvg": 1.2,
     "updated": "2025-09-01",
     "teams": {
-      "Manchester City FC":    { "teamName": "Manchester City FC",    "homeAttack": 1.55, "homeDefence": 0.65, "awayAttack": 1.45, "awayDefence": 0.75, "matchesPlayed": 12 },
-      "Real Madrid CF":        { "teamName": "Real Madrid CF",        "homeAttack": 1.60, "homeDefence": 0.65, "awayAttack": 1.45, "awayDefence": 0.75, "matchesPlayed": 12 },
-      "FC Barcelona":          { "teamName": "FC Barcelona",          "homeAttack": 1.55, "homeDefence": 0.75, "awayAttack": 1.40, "awayDefence": 0.85, "matchesPlayed": 12 },
-      "Liverpool FC":          { "teamName": "Liverpool FC",          "homeAttack": 1.50, "homeDefence": 0.75, "awayAttack": 1.40, "awayDefence": 0.85, "matchesPlayed": 12 },
-      "Arsenal FC":            { "teamName": "Arsenal FC",            "homeAttack": 1.45, "homeDefence": 0.75, "awayAttack": 1.30, "awayDefence": 0.85, "matchesPlayed": 12 },
-      "FC Bayern München":     { "teamName": "FC Bayern München",     "homeAttack": 1.65, "homeDefence": 0.70, "awayAttack": 1.50, "awayDefence": 0.80, "matchesPlayed": 12 },
-      "Bayer 04 Leverkusen":   { "teamName": "Bayer 04 Leverkusen",   "homeAttack": 1.40, "homeDefence": 0.85, "awayAttack": 1.30, "awayDefence": 0.95, "matchesPlayed": 12 },
-      "Borussia Dortmund":     { "teamName": "Borussia Dortmund",     "homeAttack": 1.35, "homeDefence": 0.95, "awayAttack": 1.20, "awayDefence": 1.05, "matchesPlayed": 12 },
-      "FC Internazionale Milano": { "teamName": "FC Internazionale Milano", "homeAttack": 1.45, "homeDefence": 0.65, "awayAttack": 1.30, "awayDefence": 0.80, "matchesPlayed": 12 },
-      "AC Milan":              { "teamName": "AC Milan",              "homeAttack": 1.30, "homeDefence": 0.85, "awayAttack": 1.15, "awayDefence": 1.00, "matchesPlayed": 12 },
-      "Juventus FC":           { "teamName": "Juventus FC",           "homeAttack": 1.25, "homeDefence": 0.75, "awayAttack": 1.05, "awayDefence": 0.90, "matchesPlayed": 12 },
-      "SSC Napoli":            { "teamName": "SSC Napoli",            "homeAttack": 1.30, "homeDefence": 0.90, "awayAttack": 1.10, "awayDefence": 1.05, "matchesPlayed": 12 },
-      "Atalanta BC":           { "teamName": "Atalanta BC",           "homeAttack": 1.45, "homeDefence": 0.95, "awayAttack": 1.25, "awayDefence": 1.05, "matchesPlayed": 12 },
-      "Paris Saint-Germain FC": { "teamName": "Paris Saint-Germain FC", "homeAttack": 1.65, "homeDefence": 0.65, "awayAttack": 1.50, "awayDefence": 0.80, "matchesPlayed": 12 },
-      "AS Monaco FC":          { "teamName": "AS Monaco FC",          "homeAttack": 1.30, "homeDefence": 0.95, "awayAttack": 1.10, "awayDefence": 1.10, "matchesPlayed": 12 },
-      "Club Atlético de Madrid": { "teamName": "Club Atlético de Madrid", "homeAttack": 1.30, "homeDefence": 0.70, "awayAttack": 1.15, "awayDefence": 0.85, "matchesPlayed": 12 },
-      "Athletic Club":         { "teamName": "Athletic Club",         "homeAttack": 1.20, "homeDefence": 0.85, "awayAttack": 1.05, "awayDefence": 1.00, "matchesPlayed": 12 },
-      "Aston Villa FC":        { "teamName": "Aston Villa FC",        "homeAttack": 1.30, "homeDefence": 0.95, "awayAttack": 1.05, "awayDefence": 1.10, "matchesPlayed": 12 },
-      "Chelsea FC":            { "teamName": "Chelsea FC",            "homeAttack": 1.25, "homeDefence": 0.90, "awayAttack": 1.15, "awayDefence": 1.00, "matchesPlayed": 12 },
-      "Tottenham Hotspur FC":  { "teamName": "Tottenham Hotspur FC",  "homeAttack": 1.35, "homeDefence": 1.00, "awayAttack": 1.20, "awayDefence": 1.10, "matchesPlayed": 12 },
-      "Newcastle United FC":   { "teamName": "Newcastle United FC",   "homeAttack": 1.25, "homeDefence": 0.90, "awayAttack": 1.10, "awayDefence": 1.05, "matchesPlayed": 12 }
+      "Manchester City FC": {
+        "teamName": "Manchester City FC",
+        "homeAttack": 1.55,
+        "homeDefence": 0.65,
+        "awayAttack": 1.45,
+        "awayDefence": 0.75,
+        "matchesPlayed": 12
+      },
+      "Real Madrid CF": {
+        "teamName": "Real Madrid CF",
+        "homeAttack": 1.6,
+        "homeDefence": 0.65,
+        "awayAttack": 1.45,
+        "awayDefence": 0.75,
+        "matchesPlayed": 12
+      },
+      "FC Barcelona": {
+        "teamName": "FC Barcelona",
+        "homeAttack": 1.55,
+        "homeDefence": 0.75,
+        "awayAttack": 1.4,
+        "awayDefence": 0.85,
+        "matchesPlayed": 12
+      },
+      "Liverpool FC": {
+        "teamName": "Liverpool FC",
+        "homeAttack": 1.5,
+        "homeDefence": 0.75,
+        "awayAttack": 1.4,
+        "awayDefence": 0.85,
+        "matchesPlayed": 12
+      },
+      "Arsenal FC": {
+        "teamName": "Arsenal FC",
+        "homeAttack": 1.45,
+        "homeDefence": 0.75,
+        "awayAttack": 1.3,
+        "awayDefence": 0.85,
+        "matchesPlayed": 12
+      },
+      "FC Bayern München": {
+        "teamName": "FC Bayern München",
+        "homeAttack": 1.65,
+        "homeDefence": 0.7,
+        "awayAttack": 1.5,
+        "awayDefence": 0.8,
+        "matchesPlayed": 12
+      },
+      "Bayer 04 Leverkusen": {
+        "teamName": "Bayer 04 Leverkusen",
+        "homeAttack": 1.4,
+        "homeDefence": 0.85,
+        "awayAttack": 1.3,
+        "awayDefence": 0.95,
+        "matchesPlayed": 12
+      },
+      "Borussia Dortmund": {
+        "teamName": "Borussia Dortmund",
+        "homeAttack": 1.35,
+        "homeDefence": 0.95,
+        "awayAttack": 1.2,
+        "awayDefence": 1.05,
+        "matchesPlayed": 12
+      },
+      "FC Internazionale Milano": {
+        "teamName": "FC Internazionale Milano",
+        "homeAttack": 1.45,
+        "homeDefence": 0.65,
+        "awayAttack": 1.3,
+        "awayDefence": 0.8,
+        "matchesPlayed": 12
+      },
+      "AC Milan": {
+        "teamName": "AC Milan",
+        "homeAttack": 1.3,
+        "homeDefence": 0.85,
+        "awayAttack": 1.15,
+        "awayDefence": 1,
+        "matchesPlayed": 12
+      },
+      "Juventus FC": {
+        "teamName": "Juventus FC",
+        "homeAttack": 1.25,
+        "homeDefence": 0.75,
+        "awayAttack": 1.05,
+        "awayDefence": 0.9,
+        "matchesPlayed": 12
+      },
+      "SSC Napoli": {
+        "teamName": "SSC Napoli",
+        "homeAttack": 1.3,
+        "homeDefence": 0.9,
+        "awayAttack": 1.1,
+        "awayDefence": 1.05,
+        "matchesPlayed": 12
+      },
+      "Atalanta BC": {
+        "teamName": "Atalanta BC",
+        "homeAttack": 1.45,
+        "homeDefence": 0.95,
+        "awayAttack": 1.25,
+        "awayDefence": 1.05,
+        "matchesPlayed": 12
+      },
+      "Paris Saint-Germain FC": {
+        "teamName": "Paris Saint-Germain FC",
+        "homeAttack": 1.65,
+        "homeDefence": 0.65,
+        "awayAttack": 1.5,
+        "awayDefence": 0.8,
+        "matchesPlayed": 12
+      },
+      "AS Monaco FC": {
+        "teamName": "AS Monaco FC",
+        "homeAttack": 1.3,
+        "homeDefence": 0.95,
+        "awayAttack": 1.1,
+        "awayDefence": 1.1,
+        "matchesPlayed": 12
+      },
+      "Club Atlético de Madrid": {
+        "teamName": "Club Atlético de Madrid",
+        "homeAttack": 1.3,
+        "homeDefence": 0.7,
+        "awayAttack": 1.15,
+        "awayDefence": 0.85,
+        "matchesPlayed": 12
+      },
+      "Athletic Club": {
+        "teamName": "Athletic Club",
+        "homeAttack": 1.2,
+        "homeDefence": 0.85,
+        "awayAttack": 1.05,
+        "awayDefence": 1,
+        "matchesPlayed": 12
+      },
+      "Aston Villa FC": {
+        "teamName": "Aston Villa FC",
+        "homeAttack": 1.3,
+        "homeDefence": 0.95,
+        "awayAttack": 1.05,
+        "awayDefence": 1.1,
+        "matchesPlayed": 12
+      },
+      "Chelsea FC": {
+        "teamName": "Chelsea FC",
+        "homeAttack": 1.25,
+        "homeDefence": 0.9,
+        "awayAttack": 1.15,
+        "awayDefence": 1,
+        "matchesPlayed": 12
+      },
+      "Tottenham Hotspur FC": {
+        "teamName": "Tottenham Hotspur FC",
+        "homeAttack": 1.35,
+        "homeDefence": 1,
+        "awayAttack": 1.2,
+        "awayDefence": 1.1,
+        "matchesPlayed": 12
+      },
+      "Newcastle United FC": {
+        "teamName": "Newcastle United FC",
+        "homeAttack": 1.25,
+        "homeDefence": 0.9,
+        "awayAttack": 1.1,
+        "awayDefence": 1.05,
+        "matchesPlayed": 12
+      }
     }
+  },
+  "ELC": {
+    "competitionCode": "ELC",
+    "homeGoalAvg": 1.4003623188405796,
+    "awayGoalAvg": 1.2047101449275361,
+    "teams": {
+      "Birmingham City FC": {
+        "teamName": "Birmingham City FC",
+        "homeAttack": 1.2108667529107375,
+        "homeDefence": 0.7939849624060151,
+        "awayAttack": 0.649624060150376,
+        "awayDefence": 1.055627425614489,
+        "matchesPlayed": 46
+      },
+      "Ipswich Town FC": {
+        "teamName": "Ipswich Town FC",
+        "homeAttack": 1.3350582147477363,
+        "homeDefence": 0.6135338345864662,
+        "awayAttack": 1.3353383458646617,
+        "awayDefence": 0.9314359637774904,
+        "matchesPlayed": 46
+      },
+      "Charlton Athletic FC": {
+        "teamName": "Charlton Athletic FC",
+        "homeAttack": 0.7141009055627426,
+        "homeDefence": 0.9383458646616541,
+        "awayAttack": 0.7578947368421053,
+        "awayDefence": 0.9935316946959897,
+        "matchesPlayed": 46
+      },
+      "Watford FC": {
+        "teamName": "Watford FC",
+        "homeAttack": 0.9314359637774904,
+        "homeDefence": 0.9744360902255641,
+        "awayAttack": 0.8300751879699249,
+        "awayDefence": 1.1798188874514879,
+        "matchesPlayed": 46
+      },
+      "Coventry City FC": {
+        "teamName": "Coventry City FC",
+        "homeAttack": 1.5834411384217337,
+        "homeDefence": 0.6857142857142857,
+        "awayAttack": 1.6601503759398497,
+        "awayDefence": 0.8072445019404916,
+        "matchesPlayed": 46
+      },
+      "Hull City AFC": {
+        "teamName": "Hull City AFC",
+        "homeAttack": 1.0866752910737387,
+        "homeDefence": 1.2270676691729323,
+        "awayAttack": 1.2631578947368423,
+        "awayDefence": 0.9935316946959897,
+        "matchesPlayed": 46
+      },
+      "Southampton FC": {
+        "teamName": "Southampton FC",
+        "homeAttack": 1.1798188874514879,
+        "homeDefence": 0.6857142857142857,
+        "awayAttack": 1.5879699248120303,
+        "awayDefence": 1.1487710219922382,
+        "matchesPlayed": 46
+      },
+      "Wrexham AFC": {
+        "teamName": "Wrexham AFC",
+        "homeAttack": 1.2729624838292368,
+        "homeDefence": 1.3353383458646617,
+        "awayAttack": 1.0105263157894737,
+        "awayDefence": 0.8693402328589911,
+        "matchesPlayed": 46
+      },
+      "Middlesbrough FC": {
+        "teamName": "Middlesbrough FC",
+        "homeAttack": 1.055627425614489,
+        "homeDefence": 0.649624060150376,
+        "awayAttack": 1.3714285714285714,
+        "awayDefence": 0.9003880983182407,
+        "matchesPlayed": 46
+      },
+      "Swansea City AFC": {
+        "teamName": "Swansea City AFC",
+        "homeAttack": 1.055627425614489,
+        "homeDefence": 0.9744360902255641,
+        "awayAttack": 0.8300751879699249,
+        "awayDefence": 0.9935316946959897,
+        "matchesPlayed": 46
+      },
+      "Norwich City FC": {
+        "teamName": "Norwich City FC",
+        "homeAttack": 0.8382923673997414,
+        "homeDefence": 1.0105263157894737,
+        "awayAttack": 1.299248120300752,
+        "awayDefence": 0.8693402328589911,
+        "matchesPlayed": 46
+      },
+      "Millwall FC": {
+        "teamName": "Millwall FC",
+        "homeAttack": 1.0245795601552394,
+        "homeDefence": 0.9022556390977444,
+        "awayAttack": 1.1187969924812031,
+        "awayDefence": 0.7451487710219923,
+        "matchesPlayed": 46
+      },
+      "Oxford United FC": {
+        "teamName": "Oxford United FC",
+        "homeAttack": 0.7451487710219923,
+        "homeDefence": 0.9744360902255641,
+        "awayAttack": 0.7578947368421053,
+        "awayDefence": 0.9935316946959897,
+        "matchesPlayed": 46
+      },
+      "Portsmouth FC": {
+        "teamName": "Portsmouth FC",
+        "homeAttack": 0.7761966364812419,
+        "homeDefence": 0.8300751879699249,
+        "awayAttack": 0.8661654135338346,
+        "awayDefence": 1.2729624838292368,
+        "matchesPlayed": 46
+      },
+      "Queens Park Rangers FC": {
+        "teamName": "Queens Park Rangers FC",
+        "homeAttack": 1.2419146183699872,
+        "homeDefence": 1.3353383458646617,
+        "awayAttack": 0.7578947368421053,
+        "awayDefence": 1.1177231565329886,
+        "matchesPlayed": 46
+      },
+      "Preston North End FC": {
+        "teamName": "Preston North End FC",
+        "homeAttack": 0.8693402328589911,
+        "homeDefence": 1.0827067669172934,
+        "awayAttack": 0.9744360902255641,
+        "awayDefence": 0.9935316946959897,
+        "matchesPlayed": 46
+      },
+      "Stoke City FC": {
+        "teamName": "Stoke City FC",
+        "homeAttack": 1.055627425614489,
+        "homeDefence": 1.0105263157894737,
+        "awayAttack": 0.6135338345864662,
+        "awayDefence": 0.8693402328589911,
+        "matchesPlayed": 46
+      },
+      "Derby County FC": {
+        "teamName": "Derby County FC",
+        "homeAttack": 0.96248382923674,
+        "homeDefence": 0.9744360902255641,
+        "awayAttack": 1.299248120300752,
+        "awayDefence": 0.9935316946959897,
+        "matchesPlayed": 46
+      },
+      "West Bromwich Albion FC": {
+        "teamName": "West Bromwich Albion FC",
+        "homeAttack": 0.8693402328589911,
+        "homeDefence": 0.9022556390977444,
+        "awayAttack": 0.7218045112781956,
+        "awayDefence": 1.0245795601552394,
+        "matchesPlayed": 46
+      },
+      "Blackburn Rovers FC": {
+        "teamName": "Blackburn Rovers FC",
+        "homeAttack": 0.5899094437257439,
+        "homeDefence": 0.9744360902255641,
+        "awayAttack": 0.8300751879699249,
+        "awayDefence": 0.9003880983182407,
+        "matchesPlayed": 46
+      },
+      "Sheffield United FC": {
+        "teamName": "Sheffield United FC",
+        "homeAttack": 1.1798188874514879,
+        "homeDefence": 1.1909774436090226,
+        "awayAttack": 1.0105263157894737,
+        "awayDefence": 1.0245795601552394,
+        "matchesPlayed": 46
+      },
+      "Bristol City FC": {
+        "teamName": "Bristol City FC",
+        "homeAttack": 1.0245795601552394,
+        "homeDefence": 1.1187969924812031,
+        "awayAttack": 0.9383458646616541,
+        "awayDefence": 0.8693402328589911,
+        "matchesPlayed": 46
+      },
+      "Leicester City FC": {
+        "teamName": "Leicester City FC",
+        "homeAttack": 0.96248382923674,
+        "homeDefence": 1.2270676691729323,
+        "awayAttack": 0.9744360902255641,
+        "awayDefence": 1.055627425614489,
+        "matchesPlayed": 46
+      },
+      "Sheffield Wednesday FC": {
+        "teamName": "Sheffield Wednesday FC",
+        "homeAttack": 0.43467011642949555,
+        "homeDefence": 1.5879699248120303,
+        "awayAttack": 0.5413533834586467,
+        "awayDefence": 1.3971539456662356,
+        "matchesPlayed": 46
+      }
+    },
+    "updated": "2026-05-21"
+  },
+  "DED": {
+    "competitionCode": "DED",
+    "homeGoalAvg": 1.8006535947712419,
+    "awayGoalAvg": 1.3758169934640523,
+    "teams": {
+      "For Sittard": {
+        "teamName": "For Sittard",
+        "homeAttack": 0.9147005444646097,
+        "homeDefence": 1.2399049881235154,
+        "awayAttack": 0.8978622327790974,
+        "awayDefence": 1.1107078039927405,
+        "matchesPlayed": 34
+      },
+      "Go Ahead Eagles": {
+        "teamName": "Go Ahead Eagles",
+        "homeAttack": 1.1107078039927405,
+        "homeDefence": 1.0261282660332542,
+        "awayAttack": 0.8551068883610452,
+        "awayDefence": 0.9473684210526315,
+        "matchesPlayed": 34
+      },
+      "Nijmegen": {
+        "teamName": "Nijmegen",
+        "homeAttack": 1.3393829401088928,
+        "homeDefence": 1.0688836104513064,
+        "awayAttack": 1.5391923990498813,
+        "awayDefence": 0.9147005444646097,
+        "matchesPlayed": 34
+      },
+      "Excelsior": {
+        "teamName": "Excelsior",
+        "homeAttack": 0.6533575317604355,
+        "homeDefence": 0.9406175771971497,
+        "awayAttack": 0.983372921615202,
+        "awayDefence": 1.1107078039927405,
+        "matchesPlayed": 34
+      },
+      "Feyenoord Rotterdam": {
+        "teamName": "Feyenoord Rotterdam",
+        "homeAttack": 1.2740471869328494,
+        "homeDefence": 0.983372921615202,
+        "awayAttack": 1.32541567695962,
+        "awayDefence": 0.6860254083484574,
+        "matchesPlayed": 34
+      },
+      "NAC Breda": {
+        "teamName": "NAC Breda",
+        "homeAttack": 0.6533575317604355,
+        "homeDefence": 0.983372921615202,
+        "awayAttack": 0.6413301662707839,
+        "awayDefence": 1.143375680580762,
+        "matchesPlayed": 34
+      },
+      "sc Heerenveen": {
+        "teamName": "sc Heerenveen",
+        "homeAttack": 1.0780399274047188,
+        "homeDefence": 1.0261282660332542,
+        "awayAttack": 1.0261282660332542,
+        "awayDefence": 0.9473684210526315,
+        "matchesPlayed": 34
+      },
+      "Volendam": {
+        "teamName": "Volendam",
+        "homeAttack": 0.7840290381125227,
+        "homeDefence": 0.983372921615202,
+        "awayAttack": 0.47030878859857483,
+        "awayDefence": 1.0453720508166968,
+        "matchesPlayed": 34
+      },
+      "PSV": {
+        "teamName": "PSV",
+        "homeAttack": 1.894736842105263,
+        "homeDefence": 1.1116389548693586,
+        "awayAttack": 1.838479809976247,
+        "awayDefence": 0.6206896551724138,
+        "matchesPlayed": 34
+      },
+      "Sparta Rotterdam": {
+        "teamName": "Sparta Rotterdam",
+        "homeAttack": 0.6860254083484574,
+        "homeDefence": 1.1543942992874108,
+        "awayAttack": 0.8123515439429929,
+        "awayDefence": 1.143375680580762,
+        "matchesPlayed": 34
+      },
+      "Zwolle": {
+        "teamName": "Zwolle",
+        "homeAttack": 0.6860254083484574,
+        "homeDefence": 0.8978622327790974,
+        "awayAttack": 0.983372921615202,
+        "awayDefence": 1.633393829401089,
+        "matchesPlayed": 34
+      },
+      "FC Twente '65": {
+        "teamName": "FC Twente '65",
+        "homeAttack": 0.9473684210526315,
+        "homeDefence": 0.684085510688836,
+        "awayAttack": 1.2826603325415677,
+        "awayDefence": 0.7840290381125227,
+        "matchesPlayed": 34
+      },
+      "AFC Ajax": {
+        "teamName": "AFC Ajax",
+        "homeAttack": 1.0453720508166968,
+        "homeDefence": 0.7268408551068883,
+        "awayAttack": 1.2826603325415677,
+        "awayDefence": 0.7840290381125227,
+        "matchesPlayed": 34
+      },
+      "Telstar": {
+        "teamName": "Telstar",
+        "homeAttack": 1.012704174228675,
+        "homeDefence": 1.1971496437054632,
+        "awayAttack": 0.7695961995249406,
+        "awayDefence": 0.882032667876588,
+        "matchesPlayed": 34
+      },
+      "AZ": {
+        "teamName": "AZ",
+        "homeAttack": 1.2740471869328494,
+        "homeDefence": 1.1116389548693586,
+        "awayAttack": 0.8123515439429929,
+        "awayDefence": 0.8166969147005445,
+        "matchesPlayed": 34
+      },
+      "Groningen": {
+        "teamName": "Groningen",
+        "homeAttack": 0.882032667876588,
+        "homeDefence": 0.7695961995249406,
+        "awayAttack": 0.9406175771971497,
+        "awayDefence": 0.882032667876588,
+        "matchesPlayed": 34
+      },
+      "FC Utrecht": {
+        "teamName": "FC Utrecht",
+        "homeAttack": 1.012704174228675,
+        "homeDefence": 0.5558194774346793,
+        "awayAttack": 1.0261282660332542,
+        "awayDefence": 0.9473684210526315,
+        "matchesPlayed": 34
+      },
+      "Heracles": {
+        "teamName": "Heracles",
+        "homeAttack": 0.7513611615245009,
+        "homeDefence": 1.5391923990498813,
+        "awayAttack": 0.5130641330166271,
+        "awayDefence": 1.600725952813067,
+        "matchesPlayed": 34
+      }
+    },
+    "updated": "2026-05-21"
+  },
+  "PPL": {
+    "competitionCode": "PPL",
+    "homeGoalAvg": 1.4967320261437909,
+    "awayGoalAvg": 1.1862745098039216,
+    "teams": {
+      "Casa Pia": {
+        "teamName": "Casa Pia",
+        "homeAttack": 0.7074235807860262,
+        "homeDefence": 1.2892561983471074,
+        "awayAttack": 0.6446280991735537,
+        "awayDefence": 1.2183406113537119,
+        "matchesPlayed": 34
+      },
+      "Sporting CP": {
+        "teamName": "Sporting CP",
+        "homeAttack": 2.004366812227074,
+        "homeDefence": 0.5454545454545455,
+        "awayAttack": 1.884297520661157,
+        "awayDefence": 0.5109170305676856,
+        "matchesPlayed": 34
+      },
+      "Nacional": {
+        "teamName": "Nacional",
+        "homeAttack": 0.9039301310043668,
+        "homeDefence": 1.140495867768595,
+        "awayAttack": 0.6942148760330579,
+        "awayDefence": 0.8646288209606987,
+        "matchesPlayed": 34
+      },
+      "Gil Vicente": {
+        "teamName": "Gil Vicente",
+        "homeAttack": 1.1004366812227073,
+        "homeDefence": 0.8429752066115702,
+        "awayAttack": 0.9421487603305785,
+        "awayDefence": 0.8253275109170306,
+        "matchesPlayed": 34
+      },
+      "Arouca": {
+        "teamName": "Arouca",
+        "homeAttack": 1.0611353711790392,
+        "homeDefence": 1.487603305785124,
+        "awayAttack": 0.9917355371900827,
+        "awayDefence": 1.3362445414847162,
+        "matchesPlayed": 34
+      },
+      "AVS": {
+        "teamName": "AVS",
+        "homeAttack": 0.5895196506550218,
+        "homeDefence": 1.3388429752066116,
+        "awayAttack": 0.5950413223140496,
+        "awayDefence": 1.572052401746725,
+        "matchesPlayed": 34
+      },
+      "FC Famalicão": {
+        "teamName": "FC Famalicão",
+        "homeAttack": 1.0611353711790392,
+        "homeDefence": 0.5950413223140496,
+        "awayAttack": 0.743801652892562,
+        "awayDefence": 0.6681222707423581,
+        "matchesPlayed": 34
+      },
+      "Santa Clara": {
+        "teamName": "Santa Clara",
+        "homeAttack": 0.6681222707423581,
+        "homeDefence": 0.8429752066115702,
+        "awayAttack": 0.743801652892562,
+        "awayDefence": 0.943231441048035,
+        "matchesPlayed": 34
+      },
+      "Moreirense": {
+        "teamName": "Moreirense",
+        "homeAttack": 0.7860262008733625,
+        "homeDefence": 1.0413223140495869,
+        "awayAttack": 0.8429752066115702,
+        "awayDefence": 1.1004366812227073,
+        "matchesPlayed": 34
+      },
+      "Alverca": {
+        "teamName": "Alverca",
+        "homeAttack": 0.7074235807860262,
+        "homeDefence": 1.140495867768595,
+        "awayAttack": 0.8429752066115702,
+        "awayDefence": 1.1397379912663754,
+        "matchesPlayed": 34
+      },
+      "Sp Braga": {
+        "teamName": "Sp Braga",
+        "homeAttack": 1.3362445414847162,
+        "homeDefence": 0.8925619834710744,
+        "awayAttack": 1.487603305785124,
+        "awayDefence": 0.7074235807860262,
+        "matchesPlayed": 34
+      },
+      "Tondela": {
+        "teamName": "Tondela",
+        "homeAttack": 0.5109170305676856,
+        "homeDefence": 1.0413223140495869,
+        "awayAttack": 0.6942148760330579,
+        "awayDefence": 1.3362445414847162,
+        "matchesPlayed": 34
+      },
+      "Estoril": {
+        "teamName": "Estoril",
+        "homeAttack": 1.1397379912663754,
+        "homeDefence": 1.2892561983471074,
+        "awayAttack": 1.2396694214876034,
+        "awayDefence": 1.2183406113537119,
+        "matchesPlayed": 34
+      },
+      "Estrela": {
+        "teamName": "Estrela",
+        "homeAttack": 0.8253275109170306,
+        "homeDefence": 1.1900826446280992,
+        "awayAttack": 0.8429752066115702,
+        "awayDefence": 1.25764192139738,
+        "matchesPlayed": 34
+      },
+      "FC Porto": {
+        "teamName": "FC Porto",
+        "homeAttack": 1.296943231441048,
+        "homeDefence": 0.2975206611570248,
+        "awayAttack": 1.6363636363636362,
+        "awayDefence": 0.4716157205240175,
+        "matchesPlayed": 34
+      },
+      "Guimaraes": {
+        "teamName": "Guimaraes",
+        "homeAttack": 1.0218340611353711,
+        "homeDefence": 0.9421487603305785,
+        "awayAttack": 0.6446280991735537,
+        "awayDefence": 1.25764192139738,
+        "matchesPlayed": 34
+      },
+      "SL Benfica": {
+        "teamName": "SL Benfica",
+        "homeAttack": 1.6113537117903929,
+        "homeDefence": 0.6446280991735537,
+        "awayAttack": 1.6363636363636362,
+        "awayDefence": 0.4716157205240175,
+        "matchesPlayed": 34
+      },
+      "Rio Ave": {
+        "teamName": "Rio Ave",
+        "homeAttack": 0.6681222707423581,
+        "homeDefence": 1.4380165289256197,
+        "awayAttack": 0.8925619834710744,
+        "awayDefence": 1.1004366812227073,
+        "matchesPlayed": 34
+      }
+    },
+    "updated": "2026-05-21"
   }
 }
