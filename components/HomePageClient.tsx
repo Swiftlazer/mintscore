@@ -36,7 +36,11 @@ const TIER_LABELS: Record<number, string> = {
   10000: "10k odds",
 };
 
-const HORIZON_MS = 48 * 60 * 60 * 1000;
+// Acca pool horizon. Has to be wide enough to cover the next full weekend
+// slate from a midweek visit. Anything tighter than ~72h means a Wed/Thu
+// load with most fixtures on Saturday filters out the entire slate and the
+// acca sections render empty (see scripts/horizon-sweep.ts).
+const HORIZON_MS = 96 * 60 * 60 * 1000;
 
 export default function HomePageClient({ predictions, accaHistoryByTier }: Props) {
   const { isFavorite, toggle, hydrated: favHydrated } = useFavorites();
@@ -151,6 +155,17 @@ export default function HomePageClient({ predictions, accaHistoryByTier }: Props
       )}
 
       {/* ---------- Main acca tiers ---------- */}
+      {filtersHydrated && !anyMainAcca && accaPool.length === 0 && (
+        <section className="mt-8 rounded-lg border border-hairline bg-mist/30 p-6 text-center">
+          <p className="font-mono text-[11px] uppercase tracking-widest text-flag">
+            Daily aggregator accas
+          </p>
+          <p className="mt-3 text-sm text-bone/70">
+            No fixtures inside the acca window right now. Selections refresh
+            automatically once the weekend slate is closer.
+          </p>
+        </section>
+      )}
       {anyMainAcca && (
         <section className="mt-8">
           <div className="mb-5 flex items-end justify-between gap-4">
