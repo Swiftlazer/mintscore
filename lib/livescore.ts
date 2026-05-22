@@ -17,12 +17,13 @@
 
 const BASE = "https://api.football-data.org/v4";
 
-/** Leagues the rest of the site already supports — keep in lockstep. */
-const SUPPORTED_FREE = [
-  "PL", "BL1", "SA", "PD", "FL1",
-  "CL", "EC", "WC", "DED", "PPL",
-  "ELC", "BSA",
-];
+/**
+ * Football-Data.org's free tier returns all 12 of these competitions
+ * by default; paid tiers add more. We deliberately do NOT filter by
+ * competition code here — the livescore sidebar shows every league the
+ * API surfaces, so upgrading the API plan to add more leagues just
+ * works without a code change.
+ */
 
 export type LiveScoreStatus =
   | "SCHEDULED"
@@ -52,6 +53,14 @@ export interface LiveScoreFeed {
   upcoming: LiveScoreMatch[];
   finished: LiveScoreMatch[];
   error?: string;          // populated when the upstream call failed
+}
+
+export interface RecentResultsFeed {
+  fetchedAt: string;
+  dateFrom: string;        // YYYY-MM-DD inclusive
+  dateTo: string;          // YYYY-MM-DD inclusive
+  matches: LiveScoreMatch[]; // all FINISHED, most-recent first
+  error?: string;
 }
 
 interface FdApiMatch {
@@ -100,7 +109,13 @@ function emptyFeed(error?: string): LiveScoreFeed {
 }
 
 /**
- * Fetch and bucket today's matches.
+ * Fetch and bucket matches around "now". We deliberately query a 3-day
+ * window (yesterday → tomorrow UTC) instead of just today, because a
+ * match that kicks off late yesterday UTC and is still in play after
+ * midnight has utcDate=yesterday and would otherwise be filtered out the
+ * moment UTC rolls over. The LIVE bucket then includes EVERY in-play
+ * match in the window, the UPCOMING bucket is anything not started yet,
+ * and the FINISHED bucket is anything that ended in the last ~18 hours.
  *
  * @param revalidateSeconds Cache hint for Next data cache. Defaults to 60s
  * which is the right grain for "live" but easy on the rate limit (10/min).
@@ -109,8 +124,19 @@ export async function getLiveScores(revalidateSeconds: number = 60): Promise<Liv
   const token = process.env.FOOTBALL_DATA_TOKEN;
   if (!token) return emptyFeed("FOOTBALL_DATA_TOKEN not configured");
 
-  const today = new Date().toISOString().slice(0, 10);
-  const url = `${BASE}/matches?dateFrom=${today}&dateTo=${today}`;
+  const now = new Date();
+  const yesterday = new Date(now); yesterday.setUTCDate(now.getUTCDate() - 1);
+  const tomorrow  = new Date(now); tomorrow.setUTCDate(now.getUTCDate() + 1);
+  const dateFrom = yesterday.toISOString().slice(0, 10);
+  const dateTo   = tomorrow.toISOString().slice(0, 10);
+  const url = `${BASE}/matches?dateFrom=${dateFrom}&dateTo=${dateTo}`;
+
+  // "Recently finished" = ended in the last 18 hours. Wide enough to
+  // catch yesterday-evening kickoffs viewed this morning local time,
+  // narrow enough not to overlap with the Recent Results tab's 7-day
+  // window in a meaningful way.
+  const recentlyFinishedAfter = now.getTime() - 18 * 60 * 60 * 1000;
+  const nowMs = now.getTime();
 
   try {
     const res = await fetch(url, {
@@ -122,21 +148,83 @@ export async function getLiveScores(revalidateSeconds: number = 60): Promise<Liv
       return emptyFeed(`upstream HTTP ${res.status}`);
     }
     const data = (await res.json()) as { matches: FdApiMatch[] };
-    const all = (data.matches ?? [])
-      .filter(m => SUPPORTED_FREE.includes(m.competition.code))
-      .map(mapMatch);
+    const all = (data.matches ?? []).map(mapMatch);
 
     return {
       fetchedAt: new Date().toISOString(),
+      // LIVE: every in-play match, regardless of UTC date.
       live: all.filter(m => LIVE_STATUSES.includes(m.status))
               .sort((a, b) => a.utcDate.localeCompare(b.utcDate)),
-      upcoming: all.filter(m => UPCOMING_STATUSES.includes(m.status))
+      // UPCOMING: scheduled and not yet kicked off.
+      upcoming: all.filter(m => UPCOMING_STATUSES.includes(m.status)
+                              && new Date(m.utcDate).getTime() >= nowMs)
               .sort((a, b) => a.utcDate.localeCompare(b.utcDate)),
-      finished: all.filter(m => FINISHED_STATUSES.includes(m.status))
-              .sort((a, b) => b.utcDate.localeCompare(a.utcDate)), // most recent first
+      // FINISHED: ended in the last 18h, so late-night UTC games still
+      // surface for users viewing in the morning.
+      finished: all.filter(m => FINISHED_STATUSES.includes(m.status)
+                              && new Date(m.utcDate).getTime() >= recentlyFinishedAfter)
+              .sort((a, b) => b.utcDate.localeCompare(a.utcDate)),
     };
   } catch (err) {
     console.error("[livescore] fetch error", err);
     return emptyFeed(err instanceof Error ? err.message : "fetch error");
+  }
+}
+
+/* ─── Recent results (last N days, finished only) ────────────────────── */
+
+function isoDate(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
+function emptyResultsFeed(dateFrom: string, dateTo: string, error?: string): RecentResultsFeed {
+  return { fetchedAt: new Date().toISOString(), dateFrom, dateTo, matches: [], error };
+}
+
+/**
+ * Fetch finished matches from the last N days (yesterday inclusive,
+ * today excluded — today's results live in the live-score feed).
+ *
+ * @param days  Look-back window in days. Defaults to 7 (full week),
+ *              capped at 10 to stay inside the free tier's max date range.
+ * @param revalidateSeconds Cache TTL. Defaults to 30 min — finished
+ *              results don't change retroactively, so a long cache is fine.
+ */
+export async function getRecentResults(
+  days: number = 7,
+  revalidateSeconds: number = 1800,
+): Promise<RecentResultsFeed> {
+  const lookback = Math.min(Math.max(Math.trunc(days), 1), 10);
+  const now = new Date();
+  const yesterday = new Date(now); yesterday.setUTCDate(now.getUTCDate() - 1);
+  const start = new Date(now);     start.setUTCDate(now.getUTCDate() - lookback);
+  const dateFrom = isoDate(start);
+  const dateTo = isoDate(yesterday);
+
+  const token = process.env.FOOTBALL_DATA_TOKEN;
+  if (!token) return emptyResultsFeed(dateFrom, dateTo, "FOOTBALL_DATA_TOKEN not configured");
+
+  const url = `${BASE}/matches?dateFrom=${dateFrom}&dateTo=${dateTo}&status=FINISHED`;
+  try {
+    const res = await fetch(url, {
+      headers: { "X-Auth-Token": token },
+      next: { revalidate: revalidateSeconds, tags: ["recent-results"] },
+    });
+    if (!res.ok) {
+      console.error(`[results] ${url} -> ${res.status}`);
+      return emptyResultsFeed(dateFrom, dateTo, `upstream HTTP ${res.status}`);
+    }
+    const data = (await res.json()) as { matches: FdApiMatch[] };
+    const matches = (data.matches ?? [])
+      .map(mapMatch)
+      // Belt-and-braces: some upstream rows occasionally come back without
+      // FINISHED status even when the filter asks for it. Drop them.
+      .filter(m => m.status === "FINISHED")
+      .sort((a, b) => b.utcDate.localeCompare(a.utcDate));
+
+    return { fetchedAt: new Date().toISOString(), dateFrom, dateTo, matches };
+  } catch (err) {
+    console.error("[results] fetch error", err);
+    return emptyResultsFeed(dateFrom, dateTo, err instanceof Error ? err.message : "fetch error");
   }
 }
