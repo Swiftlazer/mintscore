@@ -117,7 +117,7 @@ export default async function CompetitionHub({ params }: { params: Promise<{ cod
           <h2 className="text-xs font-semibold uppercase tracking-widest text-bone/40">Top scorers</h2>
           {scorers.length === 0 ? (
             <p className="mt-4 text-sm text-bone/60">
-              Scorer data isn&apos;t available for this competition on the free API tier yet.
+              Top scorer data isn&apos;t available right now.
             </p>
           ) : (
             <ul className="mt-4 divide-y divide-hairline rounded-md border border-hairline bg-mist/40">

@@ -13,15 +13,11 @@ interface Props {
 }
 
 /**
- * Context panel rendered on the match detail page. Surfaces the
- * information that IS available on the free Football-Data tier:
+ * Context panel rendered on the match detail page. Surfaces:
  *
  *   - Each team's last 5 results (Win/Draw/Loss + scoreline)
- *   - The competition's current top scorers (so the user can see at a
- *     glance whether any are playing in this match)
- *
- * Goal scorers per match aren't on the free tier; the disclaimer at the
- * bottom flags that to keep expectations honest.
+ *   - The competition's current top scorers, with anyone playing in
+ *     this match highlighted in their own panel
  */
 export default function MatchContextSection({
   homeMatches, awayMatches, homeId, awayId, homeName, awayName, topScorers, competitionName,
@@ -93,11 +89,6 @@ export default function MatchContextSection({
           </ul>
         </div>
       )}
-
-      <p className="mt-4 text-[11px] text-bone/40">
-        Goal-scorer attribution per match (who scored when) isn&apos;t available on the free data tier.
-        The figures above are season-to-date competition totals.
-      </p>
     </section>
   );
 }

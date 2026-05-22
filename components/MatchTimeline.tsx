@@ -7,10 +7,9 @@ interface Props {
 /**
  * Score timeline for a finished or in-progress match.
  *
- * The free Football-Data tier doesn't include minute-by-minute events, so
- * the timeline is built from the two checkpoints we DO have: half-time
- * and full-time scores. That's enough to convey when each side scored
- * (first half, second half, or both) without inventing data we don't own.
+ * Built from the two checkpoints we capture: half-time and full-time
+ * scores. That's enough to convey when each side scored (first half,
+ * second half, or both) without inventing data we don't own.
  */
 export default function MatchTimeline({ match }: Props) {
   if (match.status === "SCHEDULED" || match.status === "TIMED") return null;
@@ -84,7 +83,7 @@ export default function MatchTimeline({ match }: Props) {
             <GoalTicks label={match.away.shortName} first={fhAway} second={shAway} accent="edge" />
           </div>
           <p className="mt-2 font-mono text-[10px] text-bone/30">
-            Each tick is a goal. Free-tier data shows only HT and FT scores, not the minute the goals were scored.
+            Each tick is a goal.
           </p>
         </div>
       )}
