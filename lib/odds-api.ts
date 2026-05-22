@@ -73,7 +73,11 @@ export async function getMarketOdds(
 
   try {
     const url = `${BASE}/sports/${sport}/odds?regions=uk,eu&markets=h2h&oddsFormat=decimal&apiKey=${key}`;
-    const res = await fetch(url, { next: { revalidate: 600 } });
+    // Cache for 6 hours. Pre-match h2h odds drift slowly enough that this
+    // is plenty fresh, and it keeps us well under the free tier's
+    // 500 req/month cap even at modest traffic: ~6 leagues × 4 fetches/day
+    // worst case = ~720 calls/month, lower in practice with traffic gaps.
+    const res = await fetch(url, { next: { revalidate: 21600 } });
     if (!res.ok) return null;
     const events = (await res.json()) as OaEvent[];
     const event = events.find(e => matchesEvent(e, homeTeamName, awayTeamName));
