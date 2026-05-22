@@ -204,10 +204,10 @@ function SidebarContent(p: SidebarContentProps) {
             liveCount > 0 ? (
               <>
                 <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-warn align-middle" />
-                {" "}{liveCount} live · refreshes 60s
+                {" "}{liveCount} live
               </>
             ) : (
-              <>No live matches · updates 60s</>
+              <>No live matches</>
             )
           ) : (
             <>Last {RESULTS_DAYS} days · most recent first · cached 30 min</>

@@ -47,7 +47,7 @@ export default function AccumulatorCard({
           {meta.headline}
         </p>
         <p className="font-mono text-[10px] uppercase tracking-widest text-bone/40">
-          {acc.legs.length} legs
+          {acc.legs.length} games
         </p>
       </div>
 
@@ -59,21 +59,6 @@ export default function AccumulatorCard({
       </p>
 
       <p className="mt-2 text-xs text-bone/60">{meta.tagline}</p>
-
-      <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs">
-        <span className="text-bone/50">
-          Hits ~<span className="font-mono tabular text-bone/80">{hitPct.toFixed(hitPct < 1 ? 2 : 1)}%</span>
-        </span>
-        <span className="text-bone/50">
-          1 in <span className="font-mono tabular text-bone/80">{acc.oneInX.toLocaleString()}</span>
-        </span>
-        {historicalHitRate !== undefined && historicalSampleSize !== undefined && historicalSampleSize > 0 && (
-          <span className="text-bone/50">
-            History: <span className="font-mono tabular text-bone/80">{(historicalHitRate * 100).toFixed(0)}%</span>
-            <span className="ml-1 text-bone/40">(n={historicalSampleSize})</span>
-          </span>
-        )}
-      </div>
 
       <ul className="mt-4 flex-1 space-y-2 border-t border-hairline pt-4">
         {acc.legs.map(leg => (
@@ -105,7 +90,7 @@ export default function AccumulatorCard({
         <ShareButtons
           compact
           title={`Today's ${meta.headline} acca on Mintscore`}
-          description={`${acc.legs.length} legs combining at ${acc.combinedFairOdds < 100 ? acc.combinedFairOdds.toFixed(2) : Math.round(acc.combinedFairOdds).toLocaleString()} odds, model hit rate ~${hitPct < 1 ? hitPct.toFixed(2) : hitPct.toFixed(1)}%.`}
+          description={`${acc.legs.length} games combining at ${acc.combinedFairOdds < 100 ? acc.combinedFairOdds.toFixed(2) : Math.round(acc.combinedFairOdds).toLocaleString()} odds, model hit rate ~${hitPct < 1 ? hitPct.toFixed(2) : hitPct.toFixed(1)}%.`}
           url={process.env.NEXT_PUBLIC_SITE_URL ?? "https://mintscore.com.ng"}
         />
       </div>

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getMatchById, getHeadToHead } from "@/lib/football-data";
+import { getMatchById, getHeadToHead, getRecentTeamMatches, getTopScorers } from "@/lib/football-data";
 import { getMarketOdds } from "@/lib/odds-api";
 import { predictMatch } from "@/lib/predict-match";
 import ProbabilityBar from "@/components/ProbabilityBar";
@@ -9,6 +9,7 @@ import BookmakerLinks from "@/components/BookmakerLinks";
 import ShareButtons from "@/components/ShareButtons";
 import MatchTimeline from "@/components/MatchTimeline";
 import HeadToHeadSection from "@/components/HeadToHeadSection";
+import MatchContextSection from "@/components/MatchContextSection";
 
 export const revalidate = 1800;
 
@@ -29,9 +30,12 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
   const match = await getMatchById(Number(id));
   if (!match) notFound();
 
-  const [market, h2h] = await Promise.all([
+  const [market, h2h, homeForm, awayForm, topScorers] = await Promise.all([
     getMarketOdds(match.competitionCode, match.home.name, match.away.name).catch(() => null),
-    getHeadToHead(match.id, 6).catch(() => [] as typeof match[]),
+    getHeadToHead(match.id, 6).catch(() => [] as Awaited<ReturnType<typeof getHeadToHead>>),
+    getRecentTeamMatches(match.home.id, 5).catch(() => []),
+    getRecentTeamMatches(match.away.id, 5).catch(() => []),
+    getTopScorers(match.competitionCode, 12).catch(() => []),
   ]);
   const p = predictMatch(match, market ?? undefined);
 
@@ -163,6 +167,17 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
       </section>
 
       <HeadToHeadSection matches={h2h} framingTeamId={match.home.id} />
+
+      <MatchContextSection
+        homeMatches={homeForm}
+        awayMatches={awayForm}
+        homeId={match.home.id}
+        awayId={match.away.id}
+        homeName={match.home.shortName}
+        awayName={match.away.shortName}
+        topScorers={topScorers}
+        competitionName={match.competition}
+      />
 
       <section className="mt-10">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-bone/40">Most likely scorelines</h2>

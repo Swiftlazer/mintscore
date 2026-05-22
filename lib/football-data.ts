@@ -214,6 +214,19 @@ export async function getCompetitionTimeline(
   return { recent, upcoming, rounds };
 }
 
+/** Last N finished matches for a team across all competitions. Useful
+ *  for showing recent form on the match detail page. */
+export async function getRecentTeamMatches(teamId: number, limit: number = 5): Promise<Match[]> {
+  const data = await fdFetch<{ matches: FdMatch[] }>(
+    `/teams/${teamId}/matches?status=FINISHED&limit=${limit}`,
+    3 * 3600,
+  );
+  if (!data?.matches) return [];
+  return data.matches.map(mapMatch)
+    .sort((a, b) => b.utcDate.localeCompare(a.utcDate))
+    .slice(0, limit);
+}
+
 /** Last N meetings between two teams, regardless of competition. */
 export async function getHeadToHead(matchId: number, limit: number = 6): Promise<Match[]> {
   // Football-Data.org has a dedicated H2H endpoint keyed off a match id.
