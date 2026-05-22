@@ -109,19 +109,21 @@ function emptyFeed(error?: string): LiveScoreFeed {
 }
 
 /**
- * Fetch and bucket matches around "now". We deliberately query a 3-day
- * window (yesterday → tomorrow UTC) instead of just today, because a
- * match that kicks off late yesterday UTC and is still in play after
- * midnight has utcDate=yesterday and would otherwise be filtered out the
- * moment UTC rolls over. The LIVE bucket then includes EVERY in-play
- * match in the window, the UPCOMING bucket is anything not started yet,
- * and the FINISHED bucket is anything that ended in the last ~18 hours.
+ * Fetch and bucket matches around "now". We query a 3-day UTC window
+ * (yesterday → tomorrow) so late kickoffs spanning midnight UTC don't
+ * fall off, then bucket into live/upcoming/finished.
  *
- * Defensive trick: the upstream status feed sometimes lags 5-15 minutes
- * after the real full-time whistle. We catch this by demoting any
- * supposedly-live match whose kickoff was more than MAX_LIVE_MS ago to
- * the finished bucket, regardless of what the API claims. 180 minutes is
- * a comfortable ceiling for any real match including ET + penalties.
+ * The upstream status feed is unreliable: it sometimes stays at IN_PLAY
+ * for 5–15 minutes after the actual full-time whistle. We defend against
+ * that with two checks. First, if the upstream `minute` marker has
+ * flipped to a finished token (FT/AET/PEN) AND the match has run past
+ * regulation, we know it's done. Second, if a match is supposedly live
+ * but kicked off more than HARD_FINISHED_MS ago, no real match could
+ * still be running, so we override regardless of upstream signals.
+ *
+ * Critically, we mutate the match's `status` field in place when we
+ * make this correction so the client UI also stops painting the row
+ * as live (the row styling reads `match.status`, not the bucket).
  *
  * @param revalidateSeconds Cache hint for Next data cache. Defaults to 30s.
  */
@@ -137,16 +139,14 @@ export async function getLiveScores(revalidateSeconds: number = 30): Promise<Liv
   const url = `${BASE}/matches?dateFrom=${dateFrom}&dateTo=${dateTo}`;
 
   const nowMs = now.getTime();
-  const MAX_LIVE_MS = 180 * 60 * 1000;            // 3 hours from kickoff
+  const HARD_FINISHED_MS    = 155 * 60 * 1000;   // 2h35m — past any plausible match length
+  const REGULATION_DONE_MS  = 100 * 60 * 1000;   // ~regulation done; check minute marker
+  const FT_MINUTE_TOKENS = new Set(["FT", "AET", "PEN", "FT_PEN", "AWARDED"]);
   const recentlyFinishedAfter = nowMs - 18 * 60 * 60 * 1000;
 
-  // A match looks live IF the API says so AND its kickoff was recent
-  // enough to plausibly still be in progress. Beyond that ceiling we
-  // assume the status feed is stale and treat the match as finished.
-  const isApparentlyLive = (m: LiveScoreMatch) => LIVE_STATUSES.includes(m.status);
   const kickoffMs = (m: LiveScoreMatch) => new Date(m.utcDate).getTime();
-  const isStaleLive = (m: LiveScoreMatch) =>
-    isApparentlyLive(m) && (nowMs - kickoffMs(m)) > MAX_LIVE_MS;
+  const minuteSaysDone = (m: LiveScoreMatch) =>
+    !!m.minute && FT_MINUTE_TOKENS.has(m.minute.trim().toUpperCase());
 
   try {
     const res = await fetch(url, {
@@ -160,22 +160,33 @@ export async function getLiveScores(revalidateSeconds: number = 30): Promise<Liv
     const data = (await res.json()) as { matches: FdApiMatch[] };
     const all = (data.matches ?? []).map(mapMatch);
 
+    // Correction pass: any match that LOOKS live to the API but failed
+    // either of our two reality checks gets its status overwritten to
+    // FINISHED. This ensures both the bucketing below AND the client UI
+    // treat it as done.
+    for (const m of all) {
+      if (!LIVE_STATUSES.includes(m.status)) continue;
+      const ageMs = nowMs - kickoffMs(m);
+      const definitelyDone = ageMs > HARD_FINISHED_MS;
+      const likelyDone = ageMs > REGULATION_DONE_MS && minuteSaysDone(m);
+      if (definitelyDone || likelyDone) {
+        m.status = "FINISHED";
+        // Clear the stale minute marker too so the row doesn't show a
+        // running clock on what we now consider a finished game.
+        m.minute = null;
+      }
+    }
+
     return {
       fetchedAt: new Date().toISOString(),
-      // LIVE: in-play AND kicked off recently enough to actually be live.
       live: all
-        .filter(m => isApparentlyLive(m) && !isStaleLive(m))
+        .filter(m => LIVE_STATUSES.includes(m.status))
         .sort((a, b) => a.utcDate.localeCompare(b.utcDate)),
-      // UPCOMING: scheduled and not yet kicked off.
       upcoming: all
         .filter(m => UPCOMING_STATUSES.includes(m.status) && kickoffMs(m) >= nowMs)
         .sort((a, b) => a.utcDate.localeCompare(b.utcDate)),
-      // FINISHED: officially finished OR stale-live (treated as finished),
-      // either way kicked off in the last 18h so morning viewers still see
-      // late-night kickoffs.
       finished: all
-        .filter(m => (FINISHED_STATUSES.includes(m.status) || isStaleLive(m))
-                  && kickoffMs(m) >= recentlyFinishedAfter)
+        .filter(m => FINISHED_STATUSES.includes(m.status) && kickoffMs(m) >= recentlyFinishedAfter)
         .sort((a, b) => b.utcDate.localeCompare(a.utcDate)),
     };
   } catch (err) {
