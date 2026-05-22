@@ -117,10 +117,15 @@ function emptyFeed(error?: string): LiveScoreFeed {
  * match in the window, the UPCOMING bucket is anything not started yet,
  * and the FINISHED bucket is anything that ended in the last ~18 hours.
  *
- * @param revalidateSeconds Cache hint for Next data cache. Defaults to 60s
- * which is the right grain for "live" but easy on the rate limit (10/min).
+ * Defensive trick: the upstream status feed sometimes lags 5-15 minutes
+ * after the real full-time whistle. We catch this by demoting any
+ * supposedly-live match whose kickoff was more than MAX_LIVE_MS ago to
+ * the finished bucket, regardless of what the API claims. 180 minutes is
+ * a comfortable ceiling for any real match including ET + penalties.
+ *
+ * @param revalidateSeconds Cache hint for Next data cache. Defaults to 30s.
  */
-export async function getLiveScores(revalidateSeconds: number = 60): Promise<LiveScoreFeed> {
+export async function getLiveScores(revalidateSeconds: number = 30): Promise<LiveScoreFeed> {
   const token = process.env.FOOTBALL_DATA_TOKEN;
   if (!token) return emptyFeed("FOOTBALL_DATA_TOKEN not configured");
 
@@ -131,12 +136,17 @@ export async function getLiveScores(revalidateSeconds: number = 60): Promise<Liv
   const dateTo   = tomorrow.toISOString().slice(0, 10);
   const url = `${BASE}/matches?dateFrom=${dateFrom}&dateTo=${dateTo}`;
 
-  // "Recently finished" = ended in the last 18 hours. Wide enough to
-  // catch yesterday-evening kickoffs viewed this morning local time,
-  // narrow enough not to overlap with the Recent Results tab's 7-day
-  // window in a meaningful way.
-  const recentlyFinishedAfter = now.getTime() - 18 * 60 * 60 * 1000;
   const nowMs = now.getTime();
+  const MAX_LIVE_MS = 180 * 60 * 1000;            // 3 hours from kickoff
+  const recentlyFinishedAfter = nowMs - 18 * 60 * 60 * 1000;
+
+  // A match looks live IF the API says so AND its kickoff was recent
+  // enough to plausibly still be in progress. Beyond that ceiling we
+  // assume the status feed is stale and treat the match as finished.
+  const isApparentlyLive = (m: LiveScoreMatch) => LIVE_STATUSES.includes(m.status);
+  const kickoffMs = (m: LiveScoreMatch) => new Date(m.utcDate).getTime();
+  const isStaleLive = (m: LiveScoreMatch) =>
+    isApparentlyLive(m) && (nowMs - kickoffMs(m)) > MAX_LIVE_MS;
 
   try {
     const res = await fetch(url, {
@@ -152,18 +162,21 @@ export async function getLiveScores(revalidateSeconds: number = 60): Promise<Liv
 
     return {
       fetchedAt: new Date().toISOString(),
-      // LIVE: every in-play match, regardless of UTC date.
-      live: all.filter(m => LIVE_STATUSES.includes(m.status))
-              .sort((a, b) => a.utcDate.localeCompare(b.utcDate)),
+      // LIVE: in-play AND kicked off recently enough to actually be live.
+      live: all
+        .filter(m => isApparentlyLive(m) && !isStaleLive(m))
+        .sort((a, b) => a.utcDate.localeCompare(b.utcDate)),
       // UPCOMING: scheduled and not yet kicked off.
-      upcoming: all.filter(m => UPCOMING_STATUSES.includes(m.status)
-                              && new Date(m.utcDate).getTime() >= nowMs)
-              .sort((a, b) => a.utcDate.localeCompare(b.utcDate)),
-      // FINISHED: ended in the last 18h, so late-night UTC games still
-      // surface for users viewing in the morning.
-      finished: all.filter(m => FINISHED_STATUSES.includes(m.status)
-                              && new Date(m.utcDate).getTime() >= recentlyFinishedAfter)
-              .sort((a, b) => b.utcDate.localeCompare(a.utcDate)),
+      upcoming: all
+        .filter(m => UPCOMING_STATUSES.includes(m.status) && kickoffMs(m) >= nowMs)
+        .sort((a, b) => a.utcDate.localeCompare(b.utcDate)),
+      // FINISHED: officially finished OR stale-live (treated as finished),
+      // either way kicked off in the last 18h so morning viewers still see
+      // late-night kickoffs.
+      finished: all
+        .filter(m => (FINISHED_STATUSES.includes(m.status) || isStaleLive(m))
+                  && kickoffMs(m) >= recentlyFinishedAfter)
+        .sort((a, b) => b.utcDate.localeCompare(a.utcDate)),
     };
   } catch (err) {
     console.error("[livescore] fetch error", err);
