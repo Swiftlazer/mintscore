@@ -1,10 +1,45 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { STANDINGS_LEAGUES, type StandingsTable } from "@/lib/standings";
 
 const STORAGE_KEY = "mintscore:standings:league";
+const CACHE_KEY_PREFIX = "mintscore:standings:cache:";
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000;  // 24h client-side cache
+const RETRY_MS = 30_000;                    // retry every 30s while in error state
 const DEFAULT_CODE = "PL";
+
+interface CachedEntry { table: StandingsTable; cachedAt: number }
+
+function loadFromCache(code: string): CachedEntry | null {
+  try {
+    const raw = window.localStorage.getItem(CACHE_KEY_PREFIX + code);
+    if (!raw) return null;
+    const entry = JSON.parse(raw) as CachedEntry;
+    if (Date.now() - entry.cachedAt > CACHE_TTL_MS) return null;
+    if (!entry.table?.rows?.length) return null;
+    return entry;
+  } catch { return null; }
+}
+
+function saveToCache(code: string, table: StandingsTable) {
+  if (!table?.rows?.length) return;  // never cache empty/error responses
+  try {
+    window.localStorage.setItem(
+      CACHE_KEY_PREFIX + code,
+      JSON.stringify({ table, cachedAt: Date.now() }),
+    );
+  } catch { /* quota exceeded etc. — fine to skip */ }
+}
+
+/** Translate the lib's error tokens into a user-friendly sentence. */
+function friendlyErrorMessage(err: string | null): string | null {
+  if (!err) return null;
+  if (err === "rate-limited") return "Refreshing soon — showing cached table.";
+  if (err === "unauthorised") return "Standings source needs reauth — try again later.";
+  if (err.includes("FOOTBALL_DATA_TOKEN")) return "Standings source not configured.";
+  return "Couldn't refresh standings — showing the most recent version.";
+}
 
 export default function LeagueTablesSidebar() {
   const [code, setCode] = useState<string>(DEFAULT_CODE);
@@ -13,6 +48,7 @@ export default function LeagueTablesSidebar() {
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [openMobile, setOpenMobile] = useState(false);
+  const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Hydrate league choice from localStorage on mount so the user's
   // preferred league sticks across visits.
@@ -31,22 +67,56 @@ export default function LeagueTablesSidebar() {
   }, [code, hydratedCode]);
 
   const load = useCallback(async (forCode: string) => {
+    // Show any cached table immediately so the user sees something while
+    // the fresh fetch is in flight.
+    const cached = loadFromCache(forCode);
+    if (cached) {
+      setTable(cached.table);
+      setLoadError(null);
+    } else {
+      setTable(null);
+    }
+
     setLoading(true);
-    setLoadError(null);
     try {
       const res = await fetch(`/api/standings?code=${encodeURIComponent(forCode)}`, { cache: "no-store" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = (await res.json()) as StandingsTable;
-      setTable(data);
-      setLoadError(data.error ?? null);
+
+      // If the response is a populated table, accept it and overwrite cache.
+      if (data.rows.length > 0) {
+        setTable(data);
+        setLoadError(null);
+        saveToCache(forCode, data);
+        // No transient retry needed — clear any pending one.
+        if (retryTimer.current) { clearTimeout(retryTimer.current); retryTimer.current = null; }
+      } else {
+        // Empty response — likely a 429 from upstream. If we have a cached
+        // copy, keep showing it; otherwise expose the (friendly) error.
+        if (!cached) {
+          setLoadError(data.error ?? "no data");
+        } else {
+          setLoadError(data.error ?? null);
+        }
+      }
     } catch (err) {
-      setLoadError(err instanceof Error ? err.message : "fetch failed");
+      // Network or JSON parse failure. Keep any cached table visible.
+      if (!cached) setLoadError(err instanceof Error ? err.message : "fetch failed");
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => { if (hydratedCode) load(code); }, [code, hydratedCode, load]);
+
+  // Auto-retry while we're in an error state and don't have fresh data.
+  // Self-heals when the rate-limit window resets a minute later.
+  useEffect(() => {
+    if (!loadError) return;
+    if (retryTimer.current) clearTimeout(retryTimer.current);
+    retryTimer.current = setTimeout(() => { load(code); }, RETRY_MS);
+    return () => { if (retryTimer.current) clearTimeout(retryTimer.current); };
+  }, [loadError, code, load]);
 
   return (
     <>
@@ -57,7 +127,7 @@ export default function LeagueTablesSidebar() {
       >
         <SidebarContent
           code={code} setCode={setCode}
-          table={table} loading={loading} loadError={loadError}
+          table={table} loading={loading} loadError={friendlyErrorMessage(loadError)}
           onRefresh={() => load(code)}
         />
       </aside>
@@ -100,7 +170,7 @@ export default function LeagueTablesSidebar() {
             </button>
             <SidebarContent
               code={code} setCode={setCode}
-              table={table} loading={loading} loadError={loadError}
+              table={table} loading={loading} loadError={friendlyErrorMessage(loadError)}
               onRefresh={() => load(code)}
             />
           </aside>
@@ -176,9 +246,10 @@ function SidebarContent({ code, setCode, table, loading, loadError, onRefresh }:
       {/* Body */}
       <div className="flex-1 px-2 py-2">
         {loadError && !table?.rows.length && (
-          <p className="px-2 py-4 text-xs text-warn/80">
-            Couldn't load standings ({loadError}). Try another league or refresh.
-          </p>
+          <p className="px-2 py-4 text-xs text-warn/80">{loadError}</p>
+        )}
+        {loadError && table?.rows && table.rows.length > 0 && (
+          <p className="mb-2 px-2 py-1.5 text-[10px] text-bone/50">{loadError}</p>
         )}
         {table && table.rows.length === 0 && !loadError && !loading && (
           <p className="px-2 py-8 text-center text-xs text-bone/50">

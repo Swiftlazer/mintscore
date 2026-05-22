@@ -98,10 +98,12 @@ function seasonLabel(d?: { startDate?: string; endDate?: string }): string | und
 }
 
 /**
- * Fetch the table for one competition. Cached server-side for 1 hour
- * so simultaneous visitors share a single upstream call.
+ * Fetch the table for one competition. Cached server-side for 6 hours
+ * so simultaneous visitors share a single upstream call. Standings only
+ * change after a matchday so a long TTL is safe and keeps us well under
+ * Football-Data.org's 10/min rate limit even under heavy traffic.
  */
-export async function getStandings(code: string, revalidateSeconds: number = 3600): Promise<StandingsTable> {
+export async function getStandings(code: string, revalidateSeconds: number = 21600): Promise<StandingsTable> {
   const token = process.env.FOOTBALL_DATA_TOKEN;
   if (!token) return emptyTable(code, "FOOTBALL_DATA_TOKEN not configured");
   if (!STANDINGS_LEAGUES.some(l => l.code === code)) {
@@ -116,7 +118,13 @@ export async function getStandings(code: string, revalidateSeconds: number = 360
     });
     if (!res.ok) {
       console.error(`[standings] ${url} -> ${res.status}`);
-      return emptyTable(code, `upstream HTTP ${res.status}`);
+      // Friendlier message for the rate-limit case so the sidebar can
+      // recognise it and recover gracefully instead of dead-ending.
+      const friendlyError =
+        res.status === 429 ? "rate-limited" :
+        res.status === 403 ? "unauthorised" :
+        `upstream ${res.status}`;
+      return emptyTable(code, friendlyError);
     }
     const data = (await res.json()) as FdStandingsResponse;
 

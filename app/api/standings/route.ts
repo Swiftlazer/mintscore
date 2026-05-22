@@ -2,7 +2,7 @@
  * GET /api/standings?code=PL
  *
  * Returns the league table for the requested competition. Each league is
- * cached upstream for 1 hour (see lib/standings.ts), so most requests
+ * cached upstream for 6 hours (see lib/standings.ts), so most requests
  * resolve from the data cache without hitting Football-Data.org.
  */
 
@@ -25,8 +25,8 @@ export async function GET(req: Request) {
   const table = await getStandings(code);
   return NextResponse.json(table, {
     headers: {
-      // Edge cache: 1h fresh + 10min stale-while-revalidate
-      "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=600",
+      // Edge cache: 6h fresh + 30min stale-while-revalidate
+      "Cache-Control": "public, max-age=21600, s-maxage=21600, stale-while-revalidate=1800",
     },
   });
 }
