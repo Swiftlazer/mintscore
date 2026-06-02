@@ -177,15 +177,38 @@ export async function getLiveScores(revalidateSeconds: number = 30): Promise<Liv
       }
     }
 
+    // Pull international friendlies from API-Football in parallel with the
+    // FD payload. Best-effort — no key configured or any failure returns []
+    // and the FD-only behaviour is preserved.
+    const { getFriendliesAroundNow } = await import("./api-football");
+    const friendlies = await getFriendliesAroundNow().catch(() => [] as LiveScoreMatch[]);
+
+    // Apply the same staleness correction to friendlies before bucketing.
+    for (const m of friendlies) {
+      if (!LIVE_STATUSES.includes(m.status)) continue;
+      const ageMs = nowMs - kickoffMs(m);
+      const definitelyDone = ageMs > HARD_FINISHED_MS;
+      const likelyDone = ageMs > REGULATION_DONE_MS && minuteSaysDone(m);
+      if (definitelyDone || likelyDone) {
+        m.status = "FINISHED";
+        m.minute = null;
+      }
+    }
+
+    // Dedupe in the unlikely event the same fixture id appears in both
+    // sources. FD wins (its data tends to be richer).
+    const fdIds = new Set(all.map(m => m.id));
+    const merged: LiveScoreMatch[] = [...all, ...friendlies.filter(m => !fdIds.has(m.id))];
+
     return {
       fetchedAt: new Date().toISOString(),
-      live: all
+      live: merged
         .filter(m => LIVE_STATUSES.includes(m.status))
         .sort((a, b) => a.utcDate.localeCompare(b.utcDate)),
-      upcoming: all
+      upcoming: merged
         .filter(m => UPCOMING_STATUSES.includes(m.status) && kickoffMs(m) >= nowMs)
         .sort((a, b) => a.utcDate.localeCompare(b.utcDate)),
-      finished: all
+      finished: merged
         .filter(m => FINISHED_STATUSES.includes(m.status) && kickoffMs(m) >= recentlyFinishedAfter)
         .sort((a, b) => b.utcDate.localeCompare(a.utcDate)),
     };
@@ -239,11 +262,29 @@ export async function getRecentResults(
       return emptyResultsFeed(dateFrom, dateTo, `upstream HTTP ${res.status}`);
     }
     const data = (await res.json()) as { matches: FdApiMatch[] };
-    const matches = (data.matches ?? [])
+    const fdMatches = (data.matches ?? [])
       .map(mapMatch)
       // Belt-and-braces: some upstream rows occasionally come back without
       // FINISHED status even when the filter asks for it. Drop them.
-      .filter(m => m.status === "FINISHED")
+      .filter(m => m.status === "FINISHED");
+
+    // Pull friendlies from API-Football for the same window. Best-effort —
+    // missing key or fetch failure yields [] and the feed degrades to
+    // FD-only without erroring.
+    const { getRecentFriendlies } = await import("./api-football");
+    const friendlies = await getRecentFriendlies(lookback).catch(() => [] as LiveScoreMatch[]);
+
+    // Filter friendlies by the same date window to be precise (the lib
+    // already does this but we double-check in case of edge dates).
+    const fromMs = new Date(`${dateFrom}T00:00:00Z`).getTime();
+    const toMs   = new Date(`${dateTo}T23:59:59Z`).getTime();
+    const friendliesInWindow = friendlies.filter(m => {
+      const t = new Date(m.utcDate).getTime();
+      return t >= fromMs && t <= toMs;
+    });
+
+    const fdIds = new Set(fdMatches.map(m => m.id));
+    const matches = [...fdMatches, ...friendliesInWindow.filter(m => !fdIds.has(m.id))]
       .sort((a, b) => b.utcDate.localeCompare(a.utcDate));
 
     return { fetchedAt: new Date().toISOString(), dateFrom, dateTo, matches };

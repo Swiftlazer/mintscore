@@ -11,6 +11,7 @@ const COMP_BADGE: Record<string, string> = {
   PL: "EPL", PD: "La Liga", BL1: "Bundesliga", SA: "Serie A",
   FL1: "Ligue 1", CL: "UCL", EC: "Euros", WC: "World Cup",
   DED: "Eredivisie", PPL: "Primeira", ELC: "Champ.", BSA: "Brasileirão",
+  FRIENDLY: "Friendly",
 };
 
 const POLL_MS = 60_000;
@@ -344,45 +345,57 @@ function MatchRow({ match, showLeagueBadge = false }: { match: LiveScoreMatch; s
   const showScore = isLive || isFinished;
   const leagueBadge = showLeagueBadge ? (COMP_BADGE[match.competitionCode] ?? match.competitionCode) : null;
 
-  return (
-    <li>
-      <Link
-        href={`/matches/${match.id}`}
-        className={`flex items-center gap-2 rounded px-2 py-1.5 text-xs transition ${
-          isLive ? "bg-warn/10 hover:bg-warn/15" : "hover:bg-mist/60"
+  // Friendlies come from a different data source (API-Football); they
+  // don't have detail pages on /matches/[id], so the row renders as a
+  // non-clickable div instead of a Link.
+  const clickable = match.competitionCode !== "FRIENDLY";
+
+  const rowClass = `flex items-center gap-2 rounded px-2 py-1.5 text-xs transition ${
+    isLive ? "bg-warn/10" : ""
+  } ${clickable ? (isLive ? "hover:bg-warn/15" : "hover:bg-mist/60") : ""}`;
+
+  const inner = (
+    <>
+      <span
+        className={`w-8 shrink-0 text-center font-mono text-[10px] tabular ${
+          isLive ? "text-warn" : isFinished ? "text-bone/40" : "text-flag/70"
         }`}
       >
-        <span
-          className={`w-8 shrink-0 text-center font-mono text-[10px] tabular ${
-            isLive ? "text-warn" : isFinished ? "text-bone/40" : "text-flag/70"
-          }`}
-        >
-          {timeOrStatus}
-        </span>
-        <span className="flex min-w-0 flex-1 flex-col">
-          {leagueBadge && (
-            <span className="mb-0.5 font-mono text-[9px] uppercase tracking-wider text-bone/40">
-              {leagueBadge}
+        {timeOrStatus}
+      </span>
+      <span className="flex min-w-0 flex-1 flex-col">
+        {leagueBadge && (
+          <span className="mb-0.5 font-mono text-[9px] uppercase tracking-wider text-bone/40">
+            {leagueBadge}
+          </span>
+        )}
+        <span className="flex items-center justify-between gap-2">
+          <span className="truncate text-bone/90">{match.home.shortName}</span>
+          {showScore && (
+            <span className={`shrink-0 font-mono tabular ${isLive ? "font-bold text-paper" : "text-bone/80"}`}>
+              {match.home.score ?? 0}
             </span>
           )}
-          <span className="flex items-center justify-between gap-2">
-            <span className="truncate text-bone/90">{match.home.shortName}</span>
-            {showScore && (
-              <span className={`shrink-0 font-mono tabular ${isLive ? "font-bold text-paper" : "text-bone/80"}`}>
-                {match.home.score ?? 0}
-              </span>
-            )}
-          </span>
-          <span className="flex items-center justify-between gap-2">
-            <span className="truncate text-bone/90">{match.away.shortName}</span>
-            {showScore && (
-              <span className={`shrink-0 font-mono tabular ${isLive ? "font-bold text-paper" : "text-bone/80"}`}>
-                {match.away.score ?? 0}
-              </span>
-            )}
-          </span>
         </span>
-      </Link>
+        <span className="flex items-center justify-between gap-2">
+          <span className="truncate text-bone/90">{match.away.shortName}</span>
+          {showScore && (
+            <span className={`shrink-0 font-mono tabular ${isLive ? "font-bold text-paper" : "text-bone/80"}`}>
+              {match.away.score ?? 0}
+            </span>
+          )}
+        </span>
+      </span>
+    </>
+  );
+
+  return (
+    <li>
+      {clickable ? (
+        <Link href={`/matches/${match.id}`} className={rowClass}>{inner}</Link>
+      ) : (
+        <div className={rowClass}>{inner}</div>
+      )}
     </li>
   );
 }
