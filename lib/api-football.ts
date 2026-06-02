@@ -15,6 +15,7 @@
  */
 
 import type { LiveScoreMatch, LiveScoreStatus } from "./livescore";
+import type { Match } from "./types";
 
 const BASE = "https://v3.football.api-sports.io";
 
@@ -220,6 +221,27 @@ function isoDate(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
+/** API-Football free plan only supports certain seasons. Try current year
+ *  first, then fall back year-by-year. Returns results from the first
+ *  season that succeeds. */
+async function afFetchWithSeasonFallback(
+  leagueId: number,
+  dateFrom: string,
+  dateTo: string,
+  revalidateSeconds: number,
+): Promise<AFFixture[]> {
+  const currentYear = new Date().getUTCFullYear();
+  const seasons = [currentYear, currentYear - 1, currentYear - 2];
+  for (const season of seasons) {
+    const results = await afFetch(
+      `/fixtures?league=${leagueId}&season=${season}&from=${dateFrom}&to=${dateTo}`,
+      revalidateSeconds,
+    );
+    if (results.length > 0) return results;
+  }
+  return [];
+}
+
 /**
  * Fetch international friendlies for a date range across the current and
  * adjacent seasons. API-Football's `season` parameter expects a year; we
@@ -230,12 +252,8 @@ async function fetchFriendliesByDateRange(
   dateTo: string,
   revalidateSeconds: number,
 ): Promise<LiveScoreMatch[]> {
-  const season = new Date().getUTCFullYear();
   const calls = FRIENDLY_LEAGUE_IDS.map(leagueId =>
-    afFetch(
-      `/fixtures?league=${leagueId}&season=${season}&from=${dateFrom}&to=${dateTo}`,
-      revalidateSeconds,
-    ),
+    afFetchWithSeasonFallback(leagueId, dateFrom, dateTo, revalidateSeconds),
   );
   const results = await Promise.all(calls);
   const flat = results.flat();
@@ -251,6 +269,42 @@ export async function getFriendliesAroundNow(): Promise<LiveScoreMatch[]> {
   const yesterday = new Date(now); yesterday.setUTCDate(now.getUTCDate() - 1);
   const tomorrow  = new Date(now); tomorrow.setUTCDate(now.getUTCDate() + 1);
   return fetchFriendliesByDateRange(isoDate(yesterday), isoDate(tomorrow), 900);
+}
+
+/** Upcoming friendlies as Match objects, suitable for the homepage prediction
+ *  pipeline. Uses a 6-hour cache to stay within the 100/day budget. */
+export async function getUpcomingFriendlies(daysAhead: number = 14): Promise<Match[]> {
+  const now = new Date();
+  const end = new Date(now); end.setUTCDate(now.getUTCDate() + daysAhead);
+  const calls = FRIENDLY_LEAGUE_IDS.map(leagueId =>
+    afFetchWithSeasonFallback(leagueId, isoDate(now), isoDate(end), 6 * 3600),
+  );
+  const results = await Promise.all(calls);
+  return results.flat()
+    .filter(f => f.fixture.status.short === "NS" || f.fixture.status.short === "TBD")
+    .map(toMatch);
+}
+
+function toMatch(f: AFFixture): Match {
+  return {
+    id: f.fixture.id,
+    competition: f.league.round
+      ? `${f.league.name} · ${f.league.round}`
+      : f.league.name,
+    competitionCode: FRIENDLY_COMPETITION_CODE,
+    utcDate: f.fixture.date,
+    status: mapStatus(f.fixture.status.short) as Match["status"],
+    home: {
+      id: f.teams.home.id,
+      name: f.teams.home.name,
+      shortName: shortenTeamName(f.teams.home.name),
+    },
+    away: {
+      id: f.teams.away.id,
+      name: f.teams.away.name,
+      shortName: shortenTeamName(f.teams.away.name),
+    },
+  };
 }
 
 /** Finished friendlies in the last N days (caller filters by date later). */

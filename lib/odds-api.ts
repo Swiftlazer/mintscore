@@ -42,6 +42,7 @@ const SPORT_BY_COMP: Record<string, string> = {
   PPL: "soccer_portugal_primeira_liga",
   ELC: "soccer_efl_champ",
   BSA: "soccer_brazil_campeonato",
+  FRIENDLY: "soccer_international_friendlies",
 };
 
 function median(values: number[]): number {

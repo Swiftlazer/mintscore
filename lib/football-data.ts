@@ -77,23 +77,32 @@ async function fdFetch<T>(path: string, revalidateSeconds: number = 1800): Promi
   }
 }
 
-/** Get matches in a date window (defaults: today + next 3 days). */
+/** Get matches in a date window (defaults: today + next 3 days).
+ *  Football-Data.org caps each request at 10 days, so wider windows
+ *  are split into consecutive chunks and merged. */
 export async function getUpcomingMatches(daysAhead: number = 3): Promise<Match[]> {
   const today = new Date();
-  const end = new Date();
-  end.setDate(today.getDate() + daysAhead);
-  const dateFrom = today.toISOString().slice(0, 10);
-  const dateTo = end.toISOString().slice(0, 10);
+  const MAX_SPAN = 10;
+  const chunks: Promise<{ matches: FdMatch[] } | null>[] = [];
 
-  const data = await fdFetch<{ matches: FdMatch[] }>(
-    `/matches?dateFrom=${dateFrom}&dateTo=${dateTo}`,
-  );
-  if (data?.matches) {
-    return data.matches.map(mapMatch).filter(m => SUPPORTED_FREE.includes(m.competitionCode));
+  for (let offset = 0; offset < daysAhead; offset += MAX_SPAN) {
+    const from = new Date(today);
+    from.setDate(today.getDate() + offset);
+    const to = new Date(today);
+    to.setDate(today.getDate() + Math.min(offset + MAX_SPAN, daysAhead));
+    chunks.push(
+      fdFetch<{ matches: FdMatch[] }>(
+        `/matches?dateFrom=${from.toISOString().slice(0, 10)}&dateTo=${to.toISOString().slice(0, 10)}`,
+      ),
+    );
   }
-  // Demo fixture fallback — local development ONLY. In production we'd
-  // rather show an honest empty state than rebased placeholder matches
-  // that look like real upcoming fixtures to visitors.
+
+  const results = await Promise.all(chunks);
+  const allMatches = results.flatMap(r => r?.matches ?? []);
+
+  if (allMatches.length > 0) {
+    return allMatches.map(mapMatch).filter(m => SUPPORTED_FREE.includes(m.competitionCode));
+  }
   if (process.env.NODE_ENV !== "production") {
     return (demoFixtures as Match[]).map(rebaseToToday);
   }

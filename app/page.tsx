@@ -1,4 +1,5 @@
 import { getUpcomingMatches } from "@/lib/football-data";
+import { getUpcomingFriendlies } from "@/lib/api-football";
 import { getMarketOdds } from "@/lib/odds-api";
 import { predictMatch } from "@/lib/predict-match";
 import { getAccaHistoryForTier } from "@/lib/backtest";
@@ -10,11 +11,12 @@ export const revalidate = 1800; // 30-minute ISR
 const TIERS = [10, 100, 1000, 10000];
 
 export default async function HomePage() {
-  // 14-day lookahead surfaces tournament matches (World Cup, Euros, UCL
-  // knockouts) ~2 weeks ahead instead of just 3 days. Same one upstream
-  // call, no extra API quota. The 96h horizon inside the acca builder is
-  // unchanged — accas still only consider near-future matches.
-  const matches = await getUpcomingMatches(14);
+  const [leagueMatches, friendlyMatches] = await Promise.all([
+    getUpcomingMatches(14),
+    getUpcomingFriendlies(14),
+  ]);
+  const matches = [...leagueMatches, ...friendlyMatches]
+    .sort((a, b) => a.utcDate.localeCompare(b.utcDate));
 
   // Hydrate market odds in parallel (best-effort).
   const predictions = await Promise.all(

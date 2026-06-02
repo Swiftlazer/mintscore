@@ -6,6 +6,7 @@ const COMP_BADGE: Record<string, string> = {
   PL: "EPL", PD: "La Liga", BL1: "Bundesliga", SA: "Serie A",
   FL1: "Ligue 1", CL: "UCL", EC: "Euros", WC: "World Cup",
   DED: "Eredivisie", PPL: "Primeira", ELC: "Champ.", BSA: "Brasileirão",
+  FRIENDLY: "Friendly",
 };
 
 export default function MatchCard({ p }: { p: MatchPrediction }) {
@@ -18,7 +19,7 @@ export default function MatchCard({ p }: { p: MatchPrediction }) {
 
   return (
     <Link
-      href={`/matches/${p.match.id}`}
+      href={p.match.competitionCode === "FRIENDLY" ? `/matches/af/${p.match.id}` : `/matches/${p.match.id}`}
       className="group relative block rounded-lg border border-hairline bg-mist/40 p-5 transition hover:border-flag/40 hover:bg-mist/70"
     >
       {isValue && (

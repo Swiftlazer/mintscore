@@ -27,6 +27,7 @@ const COMP_BADGE: Record<string, string> = {
   PL: "EPL", PD: "La Liga", BL1: "Bundesliga", SA: "Serie A",
   FL1: "Ligue 1", CL: "UCL", EC: "Euros", WC: "World Cup",
   DED: "Eredivisie", PPL: "Primeira", ELC: "Champ.", BSA: "Brasileirão",
+  FRIENDLY: "Friendly",
 };
 
 const TIER_LABELS: Record<number, string> = {
@@ -70,12 +71,14 @@ export default function HomePageClient({ predictions, accaHistoryByTier }: Props
   }, [predictions, activeLeagues]);
 
   /* ---------- Recompose accas from filtered predictions ---------- */
-  // Pool is the next 48 hours of fixtures from the filtered set.
+  // Try the strict 96h window first; if empty, widen to all available
+  // predictions so tournament-only periods (e.g. WC) still produce accas.
   const accaPool = useMemo(() => {
     const now = Date.now();
-    return filteredPredictions.filter(
+    const strict = filteredPredictions.filter(
       p => new Date(p.match.utcDate).getTime() - now < HORIZON_MS,
     );
+    return strict.length > 0 ? strict : filteredPredictions;
   }, [filteredPredictions]);
 
   const allMainAccas = useMemo(() => compileAllTargets(accaPool), [accaPool]);
@@ -338,7 +341,7 @@ function MatchRow({
         <span>{day} · {time}</span>
       </div>
 
-      <Link href={`/matches/${m.id}`} className="mt-3 block">
+      <Link href={m.competitionCode === "FRIENDLY" ? `/matches/af/${m.id}` : `/matches/${m.id}`} className="mt-3 block">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
           <div className="flex items-center justify-end gap-2">
             <p className="font-display text-lg font-semibold leading-tight md:text-xl">{m.home.shortName}</p>
