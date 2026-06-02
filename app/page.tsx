@@ -79,9 +79,47 @@ export default async function HomePage() {
       </section>
 
       {predictions.length === 0 && (
-        <p className="py-20 text-center text-bone/50">
-          No matches in the supported leagues right now. Check back soon.
-        </p>
+        <section className="py-16">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="font-mono text-[11px] uppercase tracking-widest text-bone/40">
+              No fixtures in window
+            </p>
+            <h2 className="mt-3 font-display text-2xl font-bold tracking-tight text-bone md:text-3xl">
+              Football&apos;s quiet right now.
+            </h2>
+            <p className="mt-4 text-bone/70">
+              No matches from the supported competitions are scheduled in the next 14 days.
+              Top European leagues are between seasons until August. In the meantime:
+            </p>
+
+            <ul className="mt-6 grid gap-3 text-left sm:grid-cols-2">
+              <li>
+                <Link
+                  href="/competitions/BSA"
+                  className="block rounded-md border border-hairline bg-mist/40 p-4 transition hover:border-flag/40"
+                >
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-flag">In season now</p>
+                  <p className="mt-1 font-semibold text-bone">Brasileirão Série A →</p>
+                  <p className="mt-1 text-xs text-bone/60">Year-round Brazilian top flight</p>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/competitions/WC"
+                  className="block rounded-md border border-hairline bg-mist/40 p-4 transition hover:border-edge/40"
+                >
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-edge">Starts soon</p>
+                  <p className="mt-1 font-semibold text-bone">FIFA World Cup 2026 →</p>
+                  <p className="mt-1 text-xs text-bone/60">Group stage from June 11</p>
+                </Link>
+              </li>
+            </ul>
+
+            <p className="mt-6 text-xs text-bone/50">
+              The left sidebar still tracks live scores and recent results across every competition we cover.
+            </p>
+          </div>
+        </section>
       )}
 
       {predictions.length > 0 && (
