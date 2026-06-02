@@ -28,6 +28,62 @@ const FRIENDLY_LEAGUE_IDS = [10] as const;
  *  "Friendly". */
 export const FRIENDLY_COMPETITION_CODE = "FRIENDLY";
 
+/* ─── Rich-detail types (for /matches/af/[id]) ───────────────────────── */
+
+export interface FriendlyMatchDetail {
+  id: number;
+  utcDate: string;
+  status: LiveScoreStatus;
+  statusShort: string;
+  minute: string | null;
+  competitionName: string;
+  round: string | null;
+  venue: { name: string | null; city: string | null };
+  referee: string | null;
+  home: { id: number; name: string; logo: string | null; score: number | null };
+  away: { id: number; name: string; logo: string | null; score: number | null };
+  halftime: { home: number | null; away: number | null } | null;
+  events: FriendlyEvent[];
+  lineups: FriendlyLineupSide[];
+  statistics: FriendlyTeamStatistics[];
+}
+
+export interface FriendlyEvent {
+  teamId: number;
+  teamName: string;
+  minute: number;
+  extraMinute: number | null;
+  type: string;          // Goal, Card, subst, Var
+  detail: string;        // Normal Goal, Yellow Card, Substitution 1, etc.
+  player: string | null;
+  assist: string | null;
+  comments: string | null;
+}
+
+export interface FriendlyLineupSide {
+  teamId: number;
+  teamName: string;
+  formation: string | null;
+  coach: { id: number | null; name: string | null };
+  startingXI: Array<{ id: number; name: string; number: number | null; position: string | null; grid: string | null }>;
+  substitutes: Array<{ id: number; name: string; number: number | null; position: string | null }>;
+}
+
+export interface FriendlyTeamStatistics {
+  teamId: number;
+  teamName: string;
+  stats: Array<{ type: string; value: string | number | null }>;
+}
+
+export interface FriendlyPrediction {
+  homePct: number;        // 0–1
+  drawPct: number;
+  awayPct: number;
+  advice: string | null;  // Free-text recommendation from API-Football
+  winnerName: string | null;
+  winnerComment: string | null;
+}
+
 interface AFFixture {
   fixture: {
     id: number;
@@ -205,4 +261,189 @@ export async function getRecentFriendlies(days: number = 7): Promise<LiveScoreMa
   const start = new Date(now);     start.setUTCDate(now.getUTCDate() - lookback);
   const matches = await fetchFriendliesByDateRange(isoDate(start), isoDate(yesterday), 6 * 3600);
   return matches.filter(m => m.status === "FINISHED");
+}
+
+/* ─── Match detail (single match with everything we get) ─────────────── */
+
+interface AFFixtureDetail extends AFFixture {
+  fixture: AFFixture["fixture"] & {
+    venue: { id: number | null; name: string | null; city: string | null };
+    referee: string | null;
+  };
+  teams: {
+    home: { id: number; name: string; logo: string | null };
+    away: { id: number; name: string; logo: string | null };
+  };
+  events?: Array<{
+    time: { elapsed: number; extra: number | null };
+    team: { id: number; name: string };
+    player: { id: number | null; name: string | null };
+    assist: { id: number | null; name: string | null };
+    type: string;
+    detail: string;
+    comments: string | null;
+  }>;
+  lineups?: Array<{
+    team: { id: number; name: string };
+    formation: string | null;
+    coach: { id: number | null; name: string | null };
+    startXI: Array<{ player: { id: number; name: string; number: number | null; pos: string | null; grid: string | null } }>;
+    substitutes: Array<{ player: { id: number; name: string; number: number | null; pos: string | null } }>;
+  }>;
+  statistics?: Array<{
+    team: { id: number; name: string };
+    statistics: Array<{ type: string; value: string | number | null }>;
+  }>;
+}
+
+/**
+ * Fetch full detail for a single API-Football fixture, including events,
+ * lineups, and statistics if available. Cached aggressively (1 hour)
+ * because detail data rarely changes after a match finishes and we want
+ * to protect our 100/day budget against repeated visits to popular matches.
+ */
+export async function getFriendlyMatchDetail(id: number): Promise<FriendlyMatchDetail | null> {
+  const key = process.env.API_FOOTBALL_KEY;
+  if (!key) return null;
+
+  try {
+    const res = await fetch(`${BASE}/fixtures?id=${id}`, {
+      headers: { "x-apisports-key": key },
+      next: { revalidate: 3600, tags: [`af-fixture-${id}`] },
+    });
+    if (!res.ok) {
+      console.error(`[api-football detail] ${id} -> ${res.status}`);
+      return null;
+    }
+    const data = (await res.json()) as { response: AFFixtureDetail[]; errors: unknown };
+    const fixture = data.response?.[0];
+    if (!fixture) return null;
+
+    return {
+      id: fixture.fixture.id,
+      utcDate: fixture.fixture.date,
+      status: mapStatus(fixture.fixture.status.short),
+      statusShort: fixture.fixture.status.short,
+      minute: mapMinute(fixture.fixture.status.short, fixture.fixture.status.elapsed),
+      competitionName: fixture.league.name,
+      round: fixture.league.round || null,
+      venue: {
+        name: fixture.fixture.venue?.name ?? null,
+        city: fixture.fixture.venue?.city ?? null,
+      },
+      referee: fixture.fixture.referee ?? null,
+      home: {
+        id: fixture.teams.home.id,
+        name: fixture.teams.home.name,
+        logo: fixture.teams.home.logo ?? null,
+        score: fixture.score?.fulltime?.home ?? fixture.goals.home ?? null,
+      },
+      away: {
+        id: fixture.teams.away.id,
+        name: fixture.teams.away.name,
+        logo: fixture.teams.away.logo ?? null,
+        score: fixture.score?.fulltime?.away ?? fixture.goals.away ?? null,
+      },
+      halftime: fixture.score?.halftime
+        ? { home: fixture.score.halftime.home, away: fixture.score.halftime.away }
+        : null,
+      events: (fixture.events ?? []).map(e => ({
+        teamId: e.team.id,
+        teamName: e.team.name,
+        minute: e.time.elapsed,
+        extraMinute: e.time.extra ?? null,
+        type: e.type,
+        detail: e.detail,
+        player: e.player?.name ?? null,
+        assist: e.assist?.name ?? null,
+        comments: e.comments ?? null,
+      })),
+      lineups: (fixture.lineups ?? []).map(l => ({
+        teamId: l.team.id,
+        teamName: l.team.name,
+        formation: l.formation ?? null,
+        coach: { id: l.coach?.id ?? null, name: l.coach?.name ?? null },
+        startingXI: l.startXI.map(s => ({
+          id: s.player.id,
+          name: s.player.name,
+          number: s.player.number ?? null,
+          position: s.player.pos ?? null,
+          grid: s.player.grid ?? null,
+        })),
+        substitutes: l.substitutes.map(s => ({
+          id: s.player.id,
+          name: s.player.name,
+          number: s.player.number ?? null,
+          position: s.player.pos ?? null,
+        })),
+      })),
+      statistics: (fixture.statistics ?? []).map(s => ({
+        teamId: s.team.id,
+        teamName: s.team.name,
+        stats: s.statistics.map(st => ({ type: st.type, value: st.value })),
+      })),
+    };
+  } catch (err) {
+    console.error("[api-football detail] fetch error", err);
+    return null;
+  }
+}
+
+/* ─── Predictions for friendly matches ───────────────────────────────── */
+
+interface AFPredictionResponse {
+  response: Array<{
+    predictions: {
+      winner: { id: number | null; name: string | null; comment: string | null };
+      win_or_draw: boolean;
+      under_over: string | null;
+      goals: { home: string | null; away: string | null };
+      advice: string | null;
+      percent: { home: string; draw: string; away: string };
+    };
+    teams: { home: { id: number }; away: { id: number } };
+  }>;
+  errors: unknown;
+}
+
+function parsePct(s: string | undefined): number {
+  if (!s) return 0;
+  const n = parseFloat(s.replace("%", ""));
+  return Number.isFinite(n) ? n / 100 : 0;
+}
+
+/**
+ * Fetch API-Football's own AI prediction for a fixture. Used for friendly
+ * matches since our Poisson model isn't tuned for national-team friendlies.
+ * Cached 6 hours per fixture.
+ */
+export async function getFriendlyPrediction(fixtureId: number): Promise<FriendlyPrediction | null> {
+  const key = process.env.API_FOOTBALL_KEY;
+  if (!key) return null;
+
+  try {
+    const res = await fetch(`${BASE}/predictions?fixture=${fixtureId}`, {
+      headers: { "x-apisports-key": key },
+      next: { revalidate: 6 * 3600, tags: [`af-pred-${fixtureId}`] },
+    });
+    if (!res.ok) {
+      console.error(`[api-football prediction] ${fixtureId} -> ${res.status}`);
+      return null;
+    }
+    const data = (await res.json()) as AFPredictionResponse;
+    const pred = data.response?.[0]?.predictions;
+    if (!pred) return null;
+
+    return {
+      homePct: parsePct(pred.percent.home),
+      drawPct: parsePct(pred.percent.draw),
+      awayPct: parsePct(pred.percent.away),
+      advice: pred.advice ?? null,
+      winnerName: pred.winner?.name ?? null,
+      winnerComment: pred.winner?.comment ?? null,
+    };
+  } catch (err) {
+    console.error("[api-football prediction] fetch error", err);
+    return null;
+  }
 }
