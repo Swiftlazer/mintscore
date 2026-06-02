@@ -91,15 +91,23 @@ export async function getUpcomingMatches(daysAhead: number = 3): Promise<Match[]
   if (data?.matches) {
     return data.matches.map(mapMatch).filter(m => SUPPORTED_FREE.includes(m.competitionCode));
   }
-  // Fallback: bundled demo data, time-shifted so it always looks current.
-  return (demoFixtures as Match[]).map(rebaseToToday);
+  // Demo fixture fallback — local development ONLY. In production we'd
+  // rather show an honest empty state than rebased placeholder matches
+  // that look like real upcoming fixtures to visitors.
+  if (process.env.NODE_ENV !== "production") {
+    return (demoFixtures as Match[]).map(rebaseToToday);
+  }
+  return [];
 }
 
 export async function getMatchById(id: number): Promise<Match | null> {
   const data = await fdFetch<{ match?: FdMatch } | FdMatch>(`/matches/${id}`);
   if (!data) {
-    const demo = (demoFixtures as Match[]).find(m => m.id === id);
-    return demo ? rebaseToToday(demo) : null;
+    if (process.env.NODE_ENV !== "production") {
+      const demo = (demoFixtures as Match[]).find(m => m.id === id);
+      return demo ? rebaseToToday(demo) : null;
+    }
+    return null;
   }
   // The endpoint shape is { match: { ... } } in v4.
   // @ts-ignore -- defensive: handle either shape
