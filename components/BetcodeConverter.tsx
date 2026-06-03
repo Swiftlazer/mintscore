@@ -33,7 +33,6 @@ export default function BetcodeConverter() {
   const [copied, setCopied] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
 
   // Focus input when panel opens
   useEffect(() => {
@@ -102,7 +101,6 @@ export default function BetcodeConverter() {
         className="fixed bottom-5 left-1/2 z-40 -translate-x-1/2 inline-flex items-center gap-2 rounded-full bg-edge px-4 py-2.5 text-sm font-bold text-ink shadow-lg shadow-edge/20 transition hover:scale-[1.02] hover:bg-edge/90"
         aria-label="Open bet code converter"
       >
-        {/* Swap icon */}
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" />
         </svg>
@@ -118,7 +116,6 @@ export default function BetcodeConverter() {
             aria-hidden="true"
           />
           <div
-            ref={panelRef}
             className="fixed bottom-0 left-0 right-0 z-50 mx-auto max-w-md rounded-t-2xl border border-hairline bg-ink shadow-2xl sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl"
             role="dialog"
             aria-label="Bet code converter"
