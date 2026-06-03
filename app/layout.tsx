@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LiveScoreSidebar from "@/components/LiveScoreSidebar";
 import LeagueTablesSidebar from "@/components/LeagueTablesSidebar";
+import BetcodeConverter from "@/components/BetcodeConverter";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://mintscore.app"),
@@ -50,6 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <LiveScoreSidebar />
         <LeagueTablesSidebar />
+        <BetcodeConverter />
       </body>
     </html>
   );

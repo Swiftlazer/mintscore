@@ -221,25 +221,47 @@ function isoDate(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
-/** API-Football free plan only supports certain seasons. Try current year
- *  first, then fall back year-by-year. Returns results from the first
- *  season that succeeds. */
-async function afFetchWithSeasonFallback(
+/** Cached best season to use. The free plan may cap access at an older
+ *  year. We probe once and reuse for the rest of the process lifetime. */
+let _bestSeason: number | null = null;
+
+async function getBestSeason(): Promise<number> {
+  if (_bestSeason !== null) return _bestSeason;
+  const currentYear = new Date().getUTCFullYear();
+  const key = process.env.API_FOOTBALL_KEY;
+  if (!key) { _bestSeason = currentYear; return currentYear; }
+
+  // Probe from current year downward; stop at the first one that doesn't error.
+  for (const year of [currentYear, currentYear - 1, currentYear - 2]) {
+    try {
+      const res = await fetch(`${BASE}/fixtures?league=10&season=${year}&last=1`, {
+        headers: { "x-apisports-key": key },
+        next: { revalidate: 86400, tags: ["af-season-probe"] },
+      });
+      if (!res.ok) continue;
+      const data = (await res.json()) as AFResponse;
+      const hasErrors = Array.isArray(data.errors) ? data.errors.length > 0 : Object.keys(data.errors ?? {}).length > 0;
+      if (!hasErrors) {
+        _bestSeason = year;
+        return year;
+      }
+    } catch { /* try next */ }
+  }
+  _bestSeason = currentYear;
+  return currentYear;
+}
+
+async function afFetchWithSeason(
   leagueId: number,
   dateFrom: string,
   dateTo: string,
   revalidateSeconds: number,
 ): Promise<AFFixture[]> {
-  const currentYear = new Date().getUTCFullYear();
-  const seasons = [currentYear, currentYear - 1, currentYear - 2];
-  for (const season of seasons) {
-    const results = await afFetch(
-      `/fixtures?league=${leagueId}&season=${season}&from=${dateFrom}&to=${dateTo}`,
-      revalidateSeconds,
-    );
-    if (results.length > 0) return results;
-  }
-  return [];
+  const season = await getBestSeason();
+  return afFetch(
+    `/fixtures?league=${leagueId}&season=${season}&from=${dateFrom}&to=${dateTo}`,
+    revalidateSeconds,
+  );
 }
 
 /**
@@ -253,7 +275,7 @@ async function fetchFriendliesByDateRange(
   revalidateSeconds: number,
 ): Promise<LiveScoreMatch[]> {
   const calls = FRIENDLY_LEAGUE_IDS.map(leagueId =>
-    afFetchWithSeasonFallback(leagueId, dateFrom, dateTo, revalidateSeconds),
+    afFetchWithSeason(leagueId, dateFrom, dateTo, revalidateSeconds),
   );
   const results = await Promise.all(calls);
   const flat = results.flat();
@@ -277,7 +299,7 @@ export async function getUpcomingFriendlies(daysAhead: number = 14): Promise<Mat
   const now = new Date();
   const end = new Date(now); end.setUTCDate(now.getUTCDate() + daysAhead);
   const calls = FRIENDLY_LEAGUE_IDS.map(leagueId =>
-    afFetchWithSeasonFallback(leagueId, isoDate(now), isoDate(end), 6 * 3600),
+    afFetchWithSeason(leagueId, isoDate(now), isoDate(end), 6 * 3600),
   );
   const results = await Promise.all(calls);
   return results.flat()
